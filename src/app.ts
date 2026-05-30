@@ -30,11 +30,10 @@ export function createApp() {
   app.get('/healthz', (_req, res) => res.status(200).json({ ok: true }));
 
   app.use('/api/ads', createAdsRouter({ exoClickVastUrl: env.exoClickVastUrl }));
-  app.use('/api/videos', createVideosRouter({ prisma }));
-  app.use('/api/videos', createTimestampsRouter({ prisma }));
+  app.use('/api/videos', createVideosRouter({ prisma: prisma as any }));
+  app.use('/api/videos', createTimestampsRouter({ prisma: prisma as any }));
 
   app.use(errorHandler);
 
   return app;
 }
-
