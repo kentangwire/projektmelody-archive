@@ -29,32 +29,47 @@ print(s)
 PY
 }
 
-wait_for_qbt_password() {
+wait_for_qbt_creds() {
   local log="${1}"
   local i=0
   while [[ $i -lt 120 ]]; do
     if [[ -f "${log}" ]]; then
-      local pw
-      pw="$(python3 - "${log}" <<'PY'
+      local creds
+      creds="$(python3 - "${log}" <<'PY'
 import re,sys
 try:
   txt=open(sys.argv[1],"r",encoding="utf-8",errors="ignore").read()
 except:
   txt=""
-m=re.search(r"WebUI:.*Password:\\s*([A-Za-z0-9]+)", txt)
-print(m.group(1) if m else "")
+user=""
+pw=""
+m=re.search(r"The WebUI administrator username is:\\s*([^\\s]+)", txt)
+if m:
+  user=m.group(1)
+m=re.search(r"temporary password[^:]*:\\s*([A-Za-z0-9]+)", txt, flags=re.IGNORECASE)
+if m:
+  pw=m.group(1)
+if not pw:
+  m=re.search(r"WebUI:.*Password:\\s*([A-Za-z0-9]+)", txt)
+  if m:
+    pw=m.group(1)
+if not user:
+  m=re.search(r"WebUI:.*Username:\\s*([^\\s]+)", txt)
+  if m:
+    user=m.group(1)
+if user and pw:
+  print(f"{user}\\t{pw}")
 PY
 )"
-      if [[ -n "${pw}" ]]; then
-        echo "${pw}"
+      if [[ -n "${creds}" ]]; then
+        echo "${creds}"
         return 0
       fi
     fi
     sleep 1
     i=$((i+1))
   done
-  echo "failed to read qbittorrent webui password" >&2
-  exit 3
+  return 1
 }
 
 qbt_api() {
@@ -65,10 +80,13 @@ qbt_api() {
 }
 
 qbt_login() {
-  local pw="${1}"
-  curl -fsS -c "${WORK_DIR}/qbt.cookies" -X POST "http://127.0.0.1:${QBT_PORT}/api/v2/auth/login" \
-    --data-urlencode "username=admin" \
-    --data-urlencode "password=${pw}" >/dev/null
+  local user="${1}"
+  local pw="${2}"
+  local resp
+  resp="$(curl -sS -c "${WORK_DIR}/qbt.cookies" -X POST "http://127.0.0.1:${QBT_PORT}/api/v2/auth/login" \
+    --data-urlencode "username=${user}" \
+    --data-urlencode "password=${pw}" || true)"
+  [[ "${resp}" == "Ok." ]]
 }
 
 qbt_start() {
@@ -82,9 +100,16 @@ qbt_start() {
     --temp-path-enabled=true \
     >"${log}" 2>&1 &
   echo $! > "${WORK_DIR}/qbittorrent.pid"
-  local pw
-  pw="$(wait_for_qbt_password "${log}")"
-  qbt_login "${pw}"
+  local user="admin"
+  local pw="adminadmin"
+  local creds
+  if creds="$(wait_for_qbt_creds "${log}")"; then
+    user="${creds%%$'\t'*}"
+    pw="${creds#*$'\t'}"
+  fi
+  if ! qbt_login "${user}" "${pw}"; then
+    qbt_login "admin" "adminadmin" || { echo "failed to login qbittorrent webui" >&2; exit 3; }
+  fi
 }
 
 qbt_add_magnet() {
