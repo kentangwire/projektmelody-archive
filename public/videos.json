@@ -1,12 +1,26 @@
 [
   {
+    "id": "mouth-action-2026-05-30",
+    "title": "MOUTH ACTION",
+    "date": "2026-05-30",
+    "duration": 3406,
+    "views": 0,
+    "tags": ["Stream"],
+    "pinned": true,
+    "ready": true,
+    "thumbSrc": "./assets/mouth-action-2026-05-30-thumb.jpg",
+    "thumbClass": "t2",
+    "monogram": "PM",
+    "hlsSrc": "/videos/mouth-action-2026-05-30/master.m3u8"
+  },
+  {
     "id": "projektmelody_video_01_2026-05-19-04_36_50",
     "title": "Stream VOD — May 19, 2026",
     "date": "2026-05-19",
     "duration": 17559,
     "views": 0,
     "tags": ["Stream"],
-    "pinned": true,
+    "pinned": false,
     "ready": true,
     "thumbSrc": "./assets/projektmelody_video_01_2026-05-19-04_36_50-thumb.jpg",
     "thumbClass": "t2",

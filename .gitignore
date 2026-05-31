@@ -9,6 +9,9 @@ dist/
 .superpowers/
 
 hls-out/
+hls_build/
+__pycache__/
+*.pyc
 
 *.log
 npm-debug.log*

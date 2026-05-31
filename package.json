@@ -11,6 +11,7 @@
     "start": "node dist/src/server.js",
     "postinstall": "prisma generate",
     "test": "vitest run",
+    "import:neon": "tsx src/scripts/importNeon.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy"
