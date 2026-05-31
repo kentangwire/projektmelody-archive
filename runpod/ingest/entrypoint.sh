@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ts() {
+  date -u +"%Y-%m-%dT%H:%M:%SZ"
+}
+
+log() {
+  echo "[$(ts)] $*"
+}
+
 req() {
   local v="${1}"
   if [[ -z "${!v:-}" ]]; then
-    echo "missing env: ${v}" >&2
+    log "missing env: ${v}"
     exit 2
   fi
 }
@@ -17,6 +25,25 @@ QBT_PROFILE="${WORK_DIR}/qbt-profile"
 QBT_PORT="${QBT_PORT:-8080}"
 
 mkdir -p "${TOR_DIR}" "${OUT_DIR}" "${QBT_PROFILE}"
+log "boot MODE=${MODE} WORK_DIR=${WORK_DIR} QBT_PORT=${QBT_PORT}"
+
+QBT_TAIL_PID=""
+
+on_exit() {
+  local code=$?
+  set +e
+  if [[ -n "${QBT_TAIL_PID:-}" ]]; then
+    kill "${QBT_TAIL_PID}" >/dev/null 2>&1 || true
+  fi
+  if [[ "${code}" != "0" ]]; then
+    log "exit code=${code}"
+  else
+    log "done"
+  fi
+  if [[ "${CLEANUP_ON_FAIL:-0}" == "1" ]] && [[ "${code}" != "0" ]]; then
+    cleanup
+  fi
+}
 
 slugify() {
   python3 - "$1" <<'PY'
@@ -33,6 +60,9 @@ wait_for_qbt_creds() {
   local log="${1}"
   local i=0
   while [[ $i -lt 120 ]]; do
+    if (( i % 10 == 0 )); then
+      log "waiting for qbittorrent WebUI creds..."
+    fi
     if [[ -f "${log}" ]]; then
       local creds
       creds="$(python3 - "${log}" <<'PY'
@@ -92,12 +122,21 @@ qbt_login() {
 qbt_start() {
   local log="${WORK_DIR}/qbittorrent.log"
   rm -f "${log}"
+  log "starting qbittorrent-nox..."
   qbittorrent-nox \
     --profile="${QBT_PROFILE}" \
     --webui-port="${QBT_PORT}" \
     --save-path="${TOR_DIR}" \
     >"${log}" 2>&1 &
   echo $! > "${WORK_DIR}/qbittorrent.pid"
+  log "qbittorrent pid=$(cat "${WORK_DIR}/qbittorrent.pid")"
+  if [[ "${QBT_TAIL_STDOUT:-1}" == "1" ]]; then
+    (
+      while [[ ! -f "${log}" ]]; do sleep 0.2; done
+      tail -n 200 -F "${log}"
+    ) &
+    QBT_TAIL_PID=$!
+  fi
   local user="admin"
   local pw="adminadmin"
   local creds
@@ -107,7 +146,11 @@ qbt_start() {
   fi
   local i=0
   while [[ $i -lt 60 ]]; do
+    if (( i % 5 == 0 )); then
+      log "waiting for qbt login (${i}/60)..."
+    fi
     if qbt_login "${user}" "${pw}"; then
+      log "qbt login ok user=${user}"
       return 0
     fi
     sleep 1
@@ -115,15 +158,19 @@ qbt_start() {
   done
   i=0
   while [[ $i -lt 60 ]]; do
+    if (( i % 5 == 0 )); then
+      log "waiting for qbt login fallback (${i}/60)..."
+    fi
     if qbt_login "admin" "adminadmin"; then
+      log "qbt login ok user=admin"
       return 0
     fi
     sleep 1
     i=$((i+1))
   done
-  echo "failed to login qbittorrent webui" >&2
+  log "failed to login qbittorrent webui"
   if [[ -f "${log}" ]]; then
-    tail -n 200 "${log}" >&2 || true
+    tail -n 200 "${log}" || true
   fi
   exit 3
 }
@@ -150,16 +197,20 @@ PY
 qbt_wait_for_hash() {
   local i=0
   while [[ $i -lt 120 ]]; do
+    if (( i % 5 == 0 )); then
+      log "waiting for torrent to appear in qbittorrent (${i}/120)..."
+    fi
     local h
     h="$(qbt_first_hash || true)"
     if [[ -n "${h}" ]]; then
+      log "torrent hash=${h}"
       echo "${h}"
       return 0
     fi
     sleep 1
     i=$((i+1))
   done
-  echo "torrent not visible in qbittorrent" >&2
+  log "torrent not visible in qbittorrent"
   exit 4
 }
 
@@ -215,6 +266,22 @@ qbt_wait_complete() {
   while [[ $i -lt 43200 ]]; do
     local info
     info="$(qbt_api GET "/api/v2/torrents/info?hashes=${hash}")"
+    if (( i % 30 == 0 )); then
+      python3 - <<'PY' <<<"${info}" || true
+import json,sys
+data=json.loads(sys.stdin.read() or "[]")
+if not data:
+  print("[progress] missing torrent info")
+  raise SystemExit(0)
+t=data[0]
+name=t.get("name","")
+prog=float(t.get("progress",0))
+state=str(t.get("state",""))
+dls=float(t.get("dlspeed",0))
+ups=float(t.get("upspeed",0))
+print(f"[progress] {prog*100:.1f}% state={state} dl={dls/1024/1024:.2f}MB/s up={ups/1024/1024:.2f}MB/s name={name}")
+PY
+    fi
     local done
     done="$(python3 - <<PY
 import json,sys
@@ -228,12 +295,13 @@ print("1" if prog>=0.999 and state not in ("error","missingFiles") else "0")
 PY
 <<<"${info}")"
     if [[ "${done}" == "1" ]]; then
+      log "download complete"
       return 0
     fi
     sleep 5
     i=$((i+5))
   done
-  echo "torrent download timeout" >&2
+  log "torrent download timeout"
   exit 6
 }
 
@@ -316,10 +384,11 @@ upload_and_verify() {
   local prefix="${R2_PREFIX}"
 
   if [[ "${FORCE:-0}" != "1" ]] && r2_exists "${prefix}/master.m3u8"; then
-    echo "destination already exists in R2 (set FORCE=1 to overwrite): ${prefix}" >&2
+    log "destination already exists in R2 (set FORCE=1 to overwrite): ${prefix}"
     exit 8
   fi
 
+  log "uploading to r2 bucket=${bucket} prefix=${prefix}"
   s5cmd "$(s5cmd_base)" sync "${OUT_DIR}/" "s3://${bucket}/${prefix}/"
 
   r2_exists "${prefix}/master.m3u8" || { echo "missing in r2: master.m3u8" >&2; exit 9; }
@@ -368,49 +437,58 @@ cleanup() {
 
 main() {
   req MAGNET
-  req TITLE
-  req DATE
-
-  STREAM_SLUG="$(slugify "${TITLE}")"
-  STREAM_ID="${DATE}-${STREAM_SLUG}"
-  export STREAM_ID
-  export R2_PREFIX="streams/${STREAM_ID}"
 
   qbt_start
+  log "adding magnet..."
   qbt_add_magnet "${MAGNET}"
   HASH="$(qbt_wait_for_hash)"
   export HASH
 
   if [[ "${MODE}" == "list" ]]; then
+    log "listing files..."
     qbt_files_json "${HASH}" | jq -r '.[] | "\(.size)\t\(.name)"'
     exit 0
   fi
 
   if [[ "${MODE}" != "run" ]]; then
-    echo "invalid MODE: ${MODE}" >&2
+    log "invalid MODE: ${MODE}"
     exit 2
   fi
 
+  req TITLE
+  req DATE
+  STREAM_SLUG="$(slugify "${TITLE}")"
+  STREAM_ID="${DATE}-${STREAM_SLUG}"
+  export STREAM_ID
+  export R2_PREFIX="streams/${STREAM_ID}"
+
   req SELECT_PATH
+  log "selecting file SELECT_PATH=${SELECT_PATH}"
   qbt_select_file "${HASH}" "${SELECT_PATH}"
+  log "downloading..."
   qbt_wait_complete "${HASH}"
 
   INPUT_FILE="${TOR_DIR}/${SELECT_PATH}"
   if [[ ! -f "${INPUT_FILE}" ]]; then
-    echo "selected file not found on disk: ${INPUT_FILE}" >&2
+    log "selected file not found on disk: ${INPUT_FILE}"
     exit 10
   fi
 
   DURATION="$(probe_duration "${INPUT_FILE}")"
   export DURATION
 
+  log "encoding hls..."
   encode_hls "${INPUT_FILE}" "${OUT_DIR}"
+  log "thumbnail..."
   make_thumb "${INPUT_FILE}" "${OUT_DIR}"
 
+  log "upload+verify..."
   upload_and_verify
+  log "creating pr..."
   create_pr
+  log "cleanup..."
   cleanup
 }
 
-trap 'if [[ "${CLEANUP_ON_FAIL:-0}" == "1" ]]; then cleanup; fi' EXIT
+trap on_exit EXIT
 main
