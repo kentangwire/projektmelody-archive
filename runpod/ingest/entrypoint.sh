@@ -96,8 +96,6 @@ qbt_start() {
     --profile="${QBT_PROFILE}" \
     --webui-port="${QBT_PORT}" \
     --save-path="${TOR_DIR}" \
-    --temp-path="${TOR_DIR}/.tmp" \
-    --temp-path-enabled=true \
     >"${log}" 2>&1 &
   echo $! > "${WORK_DIR}/qbittorrent.pid"
   local user="admin"
@@ -107,9 +105,27 @@ qbt_start() {
     user="${creds%%$'\t'*}"
     pw="${creds#*$'\t'}"
   fi
-  if ! qbt_login "${user}" "${pw}"; then
-    qbt_login "admin" "adminadmin" || { echo "failed to login qbittorrent webui" >&2; exit 3; }
+  local i=0
+  while [[ $i -lt 60 ]]; do
+    if qbt_login "${user}" "${pw}"; then
+      return 0
+    fi
+    sleep 1
+    i=$((i+1))
+  done
+  i=0
+  while [[ $i -lt 60 ]]; do
+    if qbt_login "admin" "adminadmin"; then
+      return 0
+    fi
+    sleep 1
+    i=$((i+1))
+  done
+  echo "failed to login qbittorrent webui" >&2
+  if [[ -f "${log}" ]]; then
+    tail -n 200 "${log}" >&2 || true
   fi
+  exit 3
 }
 
 qbt_add_magnet() {
