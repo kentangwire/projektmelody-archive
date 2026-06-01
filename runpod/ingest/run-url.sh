@@ -18,7 +18,8 @@ if [[ -f "${ENV_FILE}" ]]; then
   set +a
 fi
 
-export URL="$1"
+URL="$(printf '%s' "$1" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+export URL
 export DATE="${2:-$(date -u +%Y-%m-%d)}"
 unset TITLE
 export MODE=run

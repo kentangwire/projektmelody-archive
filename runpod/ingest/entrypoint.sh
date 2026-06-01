@@ -17,6 +17,11 @@ req() {
   fi
 }
 
+sanitize_url() {
+  # Web Terminal paste often injects CR/LF into the URL and breaks curl (exit 3).
+  printf '%s' "${1}" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+}
+
 MODE="${MODE:-run}"
 WORK_DIR="${WORK_DIR:-/work}"
 TOR_DIR="${WORK_DIR}/torrents"
@@ -387,6 +392,8 @@ ensure_title_from_path() {
 
 download_url() {
   req URL
+  URL="$(sanitize_url "${URL}")"
+  export URL
   mkdir -p "${DL_DIR}"
   local ext dest
   ext="$(url_ext_from_path "${URL}")"
@@ -568,6 +575,9 @@ finish_ingest() {
 main_url() {
   req URL
   req DATE
+
+  URL="$(sanitize_url "${URL}")"
+  export URL
 
   mkdir -p "${DL_DIR}" "${OUT_DIR}"
   log "boot source=URL WORK_DIR=${WORK_DIR}"
