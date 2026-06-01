@@ -309,10 +309,17 @@ PY
 }
 
 ffmpeg_require_nvenc() {
-  if ! ffmpeg -hide_banner -encoders 2>/dev/null | grep -q "h264_nvenc"; then
-    echo "ffmpeg missing h264_nvenc encoder (NVENC unavailable)" >&2
-    exit 7
+  if ffmpeg -hide_banner -encoders 2>/dev/null | grep -q "h264_nvenc"; then
+    return 0
   fi
+  echo "ffmpeg missing h264_nvenc encoder (NVENC unavailable)" >&2
+  if command -v nvidia-smi >/dev/null 2>&1; then
+    nvidia-smi -L >&2 || echo "hint: NVIDIA driver/GPU not visible in this container" >&2
+  else
+    echo "hint: deploy an NVIDIA GPU pod (not CPU)" >&2
+  fi
+  echo "hint: need jellyfin-ffmpeg build (rebuild/pull latest ingest image)" >&2
+  exit 7
 }
 
 probe_duration() {
