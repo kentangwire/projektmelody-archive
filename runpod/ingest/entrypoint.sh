@@ -22,6 +22,36 @@ sanitize_url() {
   printf '%s' "${1}" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
+resolve_ffmpeg_bins() {
+  if [[ -n "${FFMPEG_BIN:-}" && -x "${FFMPEG_BIN}" ]]; then
+    FFPROBE_BIN="${FFPROBE_BIN:-$(dirname "${FFMPEG_BIN}")/ffprobe}"
+    export FFMPEG_BIN FFPROBE_BIN
+    return 0
+  fi
+
+  local dir cand
+  for dir in /opt/jellyfin-ffmpeg /usr/local/bin; do
+    if [[ -x "${dir}/ffmpeg" ]]; then
+      FFMPEG_BIN="${dir}/ffmpeg"
+      FFPROBE_BIN="${dir}/ffprobe"
+      export FFMPEG_BIN FFPROBE_BIN
+      return 0
+    fi
+  done
+
+  cand="$(find /opt/jellyfin-ffmpeg -maxdepth 3 -name ffmpeg -type f 2>/dev/null | head -1 || true)"
+  if [[ -n "${cand}" && -x "${cand}" ]]; then
+    FFMPEG_BIN="${cand}"
+    FFPROBE_BIN="$(dirname "${cand}")/ffprobe"
+    export FFMPEG_BIN FFPROBE_BIN
+    return 0
+  fi
+
+  FFMPEG_BIN=ffmpeg
+  FFPROBE_BIN=ffprobe
+  export FFMPEG_BIN FFPROBE_BIN
+}
+
 MODE="${MODE:-run}"
 WORK_DIR="${WORK_DIR:-/work}"
 TOR_DIR="${WORK_DIR}/torrents"
@@ -309,7 +339,9 @@ PY
 }
 
 ffmpeg_require_nvenc() {
-  if ffmpeg -hide_banner -encoders 2>/dev/null | grep -q "h264_nvenc"; then
+  resolve_ffmpeg_bins
+  log "ffmpeg bin=${FFMPEG_BIN}"
+  if "${FFMPEG_BIN}" -hide_banner -encoders 2>/dev/null | grep -q "h264_nvenc"; then
     return 0
   fi
   echo "ffmpeg missing h264_nvenc encoder (NVENC unavailable)" >&2
@@ -318,14 +350,15 @@ ffmpeg_require_nvenc() {
   else
     echo "hint: deploy an NVIDIA GPU pod (not CPU)" >&2
   fi
-  echo "hint: need jellyfin-ffmpeg build (rebuild/pull latest ingest image)" >&2
+  echo "hint: install jellyfin-ffmpeg to /opt/jellyfin-ffmpeg or pull latest ingest image" >&2
   exit 7
 }
 
 probe_duration() {
+  resolve_ffmpeg_bins
   local f="${1}"
   local dur
-  dur="$(ffprobe -v error -show_entries format=duration -of default=nokey=1:noprint_wrappers=1 "${f}" || true)"
+  dur="$("${FFPROBE_BIN}" -v error -show_entries format=duration -of default=nokey=1:noprint_wrappers=1 "${f}" || true)"
   python3 - <<PY
 import math,sys
 try:
@@ -337,9 +370,10 @@ PY
 }
 
 probe_height() {
+  resolve_ffmpeg_bins
   local f="${1}"
   local h
-  h="$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0:s=x "${f}" 2>/dev/null || true)"
+  h="$("${FFPROBE_BIN}" -v error -select_streams v:0 -show_entries stream=height -of csv=p=0:s=x "${f}" 2>/dev/null || true)"
   if [[ -z "${h}" ]]; then
     echo "0"
   else
@@ -417,7 +451,7 @@ encode_hls_dual() {
   mkdir -p "${out}"
   ffmpeg_require_nvenc
 
-  ffmpeg -y -hide_banner -loglevel error -i "${input}" \
+  "${FFMPEG_BIN}" -y -hide_banner -loglevel error -i "${input}" \
     -filter_complex "[0:v]split=2[v0][v1];[v0]scale=w=1920:h=1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2[v1080];[v1]scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2[v720]" \
     -map "[v1080]" -map 0:a:0 \
     -c:v:0 h264_nvenc -preset p4 -profile:v:0 high -b:v:0 6000k -maxrate:v:0 6600k -bufsize:v:0 12000k -g 120 -keyint_min 120 \
@@ -444,7 +478,7 @@ encode_hls_720_only() {
   mkdir -p "${out}"
   ffmpeg_require_nvenc
 
-  ffmpeg -y -hide_banner -loglevel error -i "${input}" \
+  "${FFMPEG_BIN}" -y -hide_banner -loglevel error -i "${input}" \
     -filter_complex "[0:v]scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2[v720]" \
     -map "[v720]" -map 0:a:0 \
     -c:v:0 h264_nvenc -preset p4 -profile:v:0 high -b:v:0 3200k -maxrate:v:0 3520k -bufsize:v:0 6400k -g 120 -keyint_min 120 \
@@ -476,9 +510,10 @@ encode_hls_adaptive() {
 }
 
 make_thumb() {
+  resolve_ffmpeg_bins
   local input="${1}"
   local out="${2}"
-  ffmpeg -y -hide_banner -loglevel error -ss 300 -i "${input}" -frames:v 1 -q:v 2 "${out}/thumb.jpg" || true
+  "${FFMPEG_BIN}" -y -hide_banner -loglevel error -ss 300 -i "${input}" -frames:v 1 -q:v 2 "${out}/thumb.jpg" || true
 }
 
 s5cmd_base() {
@@ -601,6 +636,8 @@ main_url() {
     log "download failed: ${INPUT_FILE}"
     exit 10
   fi
+  resolve_ffmpeg_bins
+  log "download size=$(stat -c%s "${INPUT_FILE}" 2>/dev/null || echo 0) bytes ffprobe=${FFPROBE_BIN}"
 
   log "encoding hls (adaptive)..."
   encode_hls_adaptive "${INPUT_FILE}" "${OUT_DIR}"

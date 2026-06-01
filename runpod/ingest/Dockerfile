@@ -19,9 +19,12 @@ RUN apt-get update \
 RUN curl -fsSL -o /tmp/jffm.tar.xz \
       "https://github.com/jellyfin/jellyfin-ffmpeg/releases/download/v${JELLYFIN_FFMPEG_VERSION}/jellyfin-ffmpeg_${JELLYFIN_FFMPEG_VERSION}_portable_linux64-gpl.tar.xz" \
   && mkdir -p /opt/jellyfin-ffmpeg \
-  && tar -xJf /tmp/jffm.tar.xz -C /opt/jellyfin-ffmpeg --strip-components=1 \
-  && ln -sf /opt/jellyfin-ffmpeg/ffmpeg /usr/local/bin/ffmpeg \
-  && ln -sf /opt/jellyfin-ffmpeg/ffprobe /usr/local/bin/ffprobe \
+  && tar -xJf /tmp/jffm.tar.xz -C /opt/jellyfin-ffmpeg \
+  && FFMPEG="$(find /opt/jellyfin-ffmpeg -name ffmpeg -type f | head -1)" \
+  && FFPROBE="$(find /opt/jellyfin-ffmpeg -name ffprobe -type f | head -1)" \
+  && test -n "${FFMPEG}" && test -x "${FFMPEG}" \
+  && ln -sf "${FFMPEG}" /usr/local/bin/ffmpeg \
+  && ln -sf "${FFPROBE}" /usr/local/bin/ffprobe \
   && rm /tmp/jffm.tar.xz
 
 RUN curl -fsSL -o /tmp/s5cmd.tar.gz "https://github.com/peak/s5cmd/releases/download/v${S5CMD_VERSION}/s5cmd_${S5CMD_VERSION}_Linux-64bit.tar.gz" \
