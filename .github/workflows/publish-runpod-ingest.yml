@@ -16,6 +16,9 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
 
@@ -24,7 +27,7 @@ jobs:
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: docker/build-push-action@v6
@@ -32,6 +35,8 @@ jobs:
           context: runpod/ingest
           file: runpod/ingest/Dockerfile
           push: true
+          provenance: false
+          sbom: false
           tags: |
             ghcr.io/${{ github.repository_owner }}/projektmelody-runpod-ingest:latest
             ghcr.io/${{ github.repository_owner }}/projektmelody-runpod-ingest:${{ github.sha }}
