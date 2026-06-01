@@ -119,7 +119,9 @@ Write-Host "=== RunPod env (paste into pod UI — secrets only) ===" -Foreground
   "GITHUB_REPO=kentangwire/projektmelody-archive",
   "GITHUB_TOKEN=<from .env.ingest>",
   "WORK_DIR=/work",
-  "IDLE=1"
+  "IDLE=1",
+  "NVIDIA_DRIVER_CAPABILITIES=compute,video,utility",
+  "NVIDIA_VISIBLE_DEVICES=all"
 ) | ForEach-Object { Write-Host $_ }
 
 Write-Host ""

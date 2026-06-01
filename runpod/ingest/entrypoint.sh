@@ -341,20 +341,27 @@ PY
 ffmpeg_require_nvenc() {
   resolve_ffmpeg_bins
   log "ffmpeg bin=${FFMPEG_BIN}"
-  if "${FFMPEG_BIN}" -hide_banner -encoders 2>/dev/null | grep -q "h264_nvenc"; then
-    return 0
+
+  # ffmpeg prints -encoders to stderr; redirecting stderr to /dev/null hides h264_nvenc.
+  if ! "${FFMPEG_BIN}" -hide_banner -encoders 2>&1 | grep -q "h264_nvenc"; then
+    echo "ffmpeg build missing h264_nvenc encoder" >&2
+    echo "hint: install jellyfin-ffmpeg to /opt/jellyfin-ffmpeg or pull latest ingest image" >&2
+    exit 7
   fi
-  echo "ffmpeg missing h264_nvenc encoder (NVENC unavailable)" >&2
-  if command -v nvidia-smi >/dev/null 2>&1; then
-    nvidia-smi -L >&2 || echo "hint: NVIDIA driver/GPU not visible in this container" >&2
-  else
-    echo "hint: deploy an NVIDIA GPU pod (not CPU)" >&2
+
+  if ! "${FFMPEG_BIN}" -hide_banner -f lavfi -i testsrc=size=1280x720:rate=30 -t 1 \
+      -c:v h264_nvenc -f null - >/dev/null 2>&1; then
+    echo "NVENC runtime init failed (GPU visible but encode session could not open)" >&2
+    if command -v nvidia-smi >/dev/null 2>&1; then
+      nvidia-smi -L >&2 || true
+    fi
+    if ! ldconfig -p 2>/dev/null | grep -q nvidia-encode; then
+      echo "hint: set NVIDIA_DRIVER_CAPABILITIES=compute,video,utility on the pod, then restart" >&2
+    else
+      echo "hint: pull latest ingest image (includes libnvenc_fix for multi-GPU RunPod hosts)" >&2
+    fi
+    exit 7
   fi
-  echo "hint: install jellyfin-ffmpeg to /opt/jellyfin-ffmpeg or pull latest ingest image" >&2
-  if ! ldconfig -p 2>/dev/null | grep -q nvidia-encode; then
-    echo "hint: set NVIDIA_DRIVER_CAPABILITIES=compute,video,utility on the pod, then restart" >&2
-  fi
-  exit 7
 }
 
 probe_duration() {

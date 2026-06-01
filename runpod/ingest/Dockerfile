@@ -8,7 +8,9 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
+    gcc \
     jq \
+    libc6-dev \
     python3 \
     python3-pip \
     qbittorrent-nox \
@@ -38,6 +40,10 @@ WORKDIR /app
 COPY entrypoint.sh /app/entrypoint.sh
 COPY run-url.sh /app/run-url.sh
 COPY github_pr.py /app/github_pr.py
+COPY nvenc_fix.c /tmp/nvenc_fix.c
+
+RUN gcc -shared -fPIC -O2 -o /opt/libnvenc_fix.so /tmp/nvenc_fix.c -ldl \
+  && rm /tmp/nvenc_fix.c
 
 RUN chmod +x /app/entrypoint.sh /app/run-url.sh
 
@@ -46,5 +52,6 @@ ENV WORK_DIR=/work
 ENV IDLE=1
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
 ENV NVIDIA_VISIBLE_DEVICES=all
+ENV LD_PRELOAD=/opt/libnvenc_fix.so
 
 ENTRYPOINT ["/app/entrypoint.sh"]

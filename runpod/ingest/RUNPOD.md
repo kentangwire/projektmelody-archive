@@ -40,10 +40,9 @@ Remove any empty `MAGNET=` from pod env if present.
 The container **idles** when no job is configured (`IDLE=1`, default). Open **Web Terminal**:
 
 ```bash
-# Verify NVENC (needs NVIDIA_DRIVER_CAPABILITIES including video — restart pod after changing)
+# Verify NVENC (restart pod after changing NVIDIA_DRIVER_CAPABILITIES)
 ldconfig -p | grep nvidia-encode || echo "missing libnvidia-encode — add video to NVIDIA_DRIVER_CAPABILITIES and restart"
-ffmpeg -hide_banner -encoders 2>/dev/null | grep h264_nvenc
-```
+ffmpeg -hide_banner -encoders 2>&1 | grep h264_nvenc
 
 # Verify volume
 df -h /work
@@ -51,6 +50,29 @@ df -h /work
 # Run an ingest (title from filename)
 /app/run-url.sh "https://example.com/my-stream.mp4"
 /app/run-url.sh "https://example.com/my-stream.mp4" "2026-06-02"
+```
+
+### Quick ingest script (paste whole block)
+
+**Before running:** set `NVIDIA_DRIVER_CAPABILITIES=compute,video,utility` on the pod and **restart** the pod. Swap in a **fresh** direct download URL.
+
+```bash
+ldconfig -p | grep nvidia-encode || { echo "Add NVIDIA_DRIVER_CAPABILITIES=compute,video,utility in RunPod, restart pod, then re-run."; exit 1; }
+
+curl -fsSL -o /tmp/jffm.tar.xz \
+  "https://github.com/jellyfin/jellyfin-ffmpeg/releases/download/v7.1.4-1/jellyfin-ffmpeg_7.1.4-1_portable_linux64-gpl.tar.xz"
+rm -rf /opt/jellyfin-ffmpeg
+mkdir -p /opt/jellyfin-ffmpeg
+tar -xJf /tmp/jffm.tar.xz -C /opt/jellyfin-ffmpeg
+FFMPEG_BIN="$(find /opt/jellyfin-ffmpeg -name ffmpeg -type f | head -1)"
+FFPROBE_BIN="$(find /opt/jellyfin-ffmpeg -name ffprobe -type f | head -1)"
+ln -sf "$FFMPEG_BIN" /usr/local/bin/ffmpeg
+ln -sf "$FFPROBE_BIN" /usr/local/bin/ffprobe
+
+"$FFMPEG_BIN" -hide_banner -encoders 2>/dev/null | grep h264_nvenc
+"$FFPROBE_BIN" -v error -select_streams v:0 -show_entries stream=height -of csv=p=0:s=x /workspace/downloads/source.mkv 2>/dev/null || true
+
+/app/run-url.sh "$(printf '%s' 'https://YOUR-FRESH-DIRECT-LINK.mkv' | tr -d '\r\n')"
 ```
 
 ## One-shot pod (optional)
