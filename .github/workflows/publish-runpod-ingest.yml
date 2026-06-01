@@ -3,6 +3,7 @@ name: Publish Runpod ingest image
 on:
   push:
     branches:
+      - main
       - master
     paths:
       - "runpod/ingest/**"

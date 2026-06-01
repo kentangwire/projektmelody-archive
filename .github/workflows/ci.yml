@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Verify public/ mirrors source
+        run: |
+          node scripts/sync-public.mjs
+          git diff --exit-code index.html public/index.html videos.json public/videos.json || {
+            echo "::error::Run npm run sync:public and commit public/ changes"
+            exit 1
+          }
+
+      - run: npm test
+
+      - name: Dry-run Neon import plan
+        run: npm run import:neon -- --dry-run

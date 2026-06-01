@@ -30,7 +30,7 @@ html { scroll-behavior: smooth; }
 body {
   background:
     linear-gradient(rgba(4,6,15,0.92), rgba(4,6,15,0.96)),
-    url("./assets/cb7ff336-3108-4b37-8786-666d90afa5ca-profile_banner-480.png") center / cover no-repeat fixed;
+    url("./assets/cb7ff336-3108-4b37-8786-666d90afa5ca-profile_banner-480.png") center / cover no-repeat scroll;
   color: var(--text);
   font-family: 'Rajdhani', sans-serif;
   font-weight: 400;
@@ -224,7 +224,8 @@ nav a.active::after {
   box-shadow: var(--glow-cyan);
 }
 
-.nav-full { display: none; }
+.nav-full { display: inline; }
+.nav-short { display: none; }
 
 .header-left,
 .header-right { display: flex; align-items: center; gap: 0.55rem; flex-shrink: 0; }
@@ -1137,6 +1138,7 @@ body.vp-player-fs {
 body.vp-player-fs .vp-detail,
 body.vp-player-fs .wts-panel,
 body.vp-player-fs .wcs-panel,
+body.vp-player-fs .modal-side,
 body.vp-player-fs .pm-close-x {
   display: none !important;
 }
@@ -2321,19 +2323,20 @@ footer::before {
 
 .btn-load:hover::before { left: 100%; }
 
-/* ===================== VIDEO DETAIL (mobile-player-preview) ===================== */
+/* ===================== VIDEO DETAIL ===================== */
+.modal-side {
+  display: contents;
+}
+
 .modal.modal-has-detail {
-  max-width: 420px;
-  max-height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
   display: flex;
   flex-direction: column;
   background: #050810;
   border-color: rgba(0, 255, 231, 0.18);
+  max-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .vp-detail {
@@ -3586,7 +3589,8 @@ footer::before {
 .nav-toggle { display: none; }
 
 @media (max-width: 900px) {
-  body { background-attachment: scroll; }
+  .nav-full { display: none; }
+  .nav-short { display: inline; }
   body::before { position: absolute; }
   header { padding: 0.35rem 1.2rem 0.45rem; gap: 0.12rem; }
   nav {
@@ -3785,6 +3789,209 @@ footer::before {
 
   #controls {
     padding: 24px 6px calc(6px + env(safe-area-inset-bottom));
+  }
+
+  .modal.modal-has-detail {
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+}
+
+@media (min-width: 521px) and (max-width: 900px) {
+  .modal.modal-has-detail {
+    max-width: min(760px, 100%);
+    max-height: calc(100vh - 2rem);
+  }
+}
+
+@media (min-width: 901px) {
+  .modal-bg.open { padding: 1.25rem 2rem; }
+
+  .header-search .search-input { width: 260px; }
+  .header-search .search-input:focus { width: 320px; }
+
+  .modal.modal-has-detail {
+    max-width: min(96vw, 1440px);
+    width: 100%;
+    max-height: 96vh;
+    display: grid;
+    grid-template-columns: minmax(420px, 1.15fr) minmax(400px, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+    overflow: hidden;
+    overscroll-behavior: auto;
+  }
+
+  .modal.modal-has-detail .modal-screen {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    max-height: min(58vh, 780px);
+    width: 100%;
+    align-self: start;
+  }
+
+  .modal.modal-has-detail .modal-side {
+    display: contents;
+  }
+
+  .modal.modal-has-detail .vp-detail {
+    grid-column: 1;
+    grid-row: 2 / 4;
+    order: unset;
+    overflow-y: auto;
+    min-height: 0;
+    padding-bottom: 1.75rem;
+  }
+
+  .modal.modal-has-detail .wts-panel {
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgba(185, 79, 255, 0.2);
+    border-top: none;
+  }
+
+  .modal.modal-has-detail .wcs-panel {
+    grid-column: 2;
+    grid-row: 3;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgba(0, 245, 255, 0.15);
+  }
+
+  .modal.modal-has-detail .wts-body,
+  .modal.modal-has-detail .wcs-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0.85rem 1.25rem 1.1rem;
+  }
+
+  .modal.modal-has-detail .wts-head,
+  .modal.modal-has-detail .wcs-head {
+    padding: 0.8rem 1.25rem;
+  }
+
+  .modal.modal-has-detail .wts-list,
+  .modal.modal-has-detail .wcs-list {
+    max-height: none;
+    flex: 1;
+    min-height: 100px;
+    margin-bottom: 0.65rem;
+  }
+
+  .modal.modal-has-detail .pm-close-x {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    top: 14px;
+    right: 14px;
+  }
+
+  .vpd-title {
+    font-size: 1.35rem;
+    padding: 1.15rem 1.35rem 0.35rem;
+    line-height: 1.3;
+  }
+
+  .vpd-meta {
+    padding: 0 1.35rem 0.85rem;
+    font-size: 0.85rem;
+  }
+
+  .vpd-action-bar {
+    margin-top: 0.25rem;
+  }
+
+  .vpd-abtn {
+    min-height: 48px;
+    padding: 0.6rem 0.55rem;
+    font-size: 0.72rem;
+    gap: 0.35rem;
+  }
+
+  .vpd-abtn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .vpd-abtn span {
+    font-size: 0.68rem;
+  }
+
+  .vpd-abtn-label {
+    display: inline;
+  }
+
+  .vpd-tag {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.8rem;
+  }
+
+  .vpd-tag-hint {
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .wts-title,
+  .wcs-title {
+    font-size: 0.82rem;
+  }
+
+  .wts-item,
+  .wcs-item {
+    font-size: 0.74rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .vpd-rec-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+    padding: 0 1.35rem 1.35rem;
+  }
+
+  .vpd-section-label,
+  .vpd-tags,
+  .vpd-tag-hint,
+  .vpd-tag-add,
+  .vpd-tag-picker,
+  .vpd-tag-msg {
+    padding-left: 1.35rem;
+    padding-right: 1.35rem;
+  }
+
+  .vpd-section-label {
+    font-size: 0.68rem;
+    padding-top: 1.1rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .modal.modal-has-detail {
+    max-width: min(94vw, 1560px);
+    grid-template-columns: minmax(480px, 1.2fr) minmax(440px, 1fr);
+  }
+
+  .modal.modal-has-detail .modal-screen {
+    max-height: min(62vh, 820px);
+  }
+
+  .vpd-title {
+    font-size: 1.45rem;
+  }
+
+  .vpd-rec-grid {
+    gap: 1rem;
   }
 }
 </style>
@@ -4153,6 +4360,7 @@ footer::before {
       </div>
     </div>
 
+    <div class="modal-side" id="modalSide">
     <section class="wts-panel" id="watcherTimestamps" hidden aria-label="Watcher timestamps">
       <div class="wts-head" id="tsHead">
         <div class="wts-head-main">
@@ -4242,7 +4450,7 @@ footer::before {
       </div>
 
       <div class="vpd-section-label">Tags</div>
-      <p class="vpd-tag-hint">Tap tags that fit this VOD. Your picks help others find it.</p>
+      <p class="vpd-tag-hint">Pick tags that fit this VOD. Your choices help others find it.</p>
       <div class="vpd-tags" id="vpdTags"></div>
       <button type="button" class="vpd-tag-add" id="vpdAddTagBtn">+ Add tag</button>
       <div class="vpd-tag-msg" id="vpdTagMsg" hidden></div>
@@ -4253,6 +4461,7 @@ footer::before {
 
       <div class="vpd-section-label">Recommended</div>
       <div class="vpd-rec-grid" id="vpdRec"></div>
+    </div>
     </div>
   </div>
 </div>
@@ -4574,6 +4783,8 @@ footer::before {
     }
   }
 
+  let pmCatalogSig = '';
+
   function startPmStatsPolling() {
     if (pmStats.timer) return;
     fetchPmStats();
@@ -4583,7 +4794,16 @@ footer::before {
     });
     pmStats.catalogTimer = window.setInterval(async () => {
       try {
-        await loadVideos();
+        const res = await fetch('./videos.json', { cache: 'default' });
+        if (!res.ok) return;
+        const text = await res.text();
+        if (text === pmCatalogSig) return;
+        pmCatalogSig = text;
+        const data = JSON.parse(text);
+        if (!Array.isArray(data)) return;
+        videos = data;
+        buildVodIndex();
+        updateHeroStats();
         renderAll();
       } catch {}
     }, 60000);
@@ -4683,6 +4903,14 @@ footer::before {
 
   function isMobile() {
     return !!pmMobileUi.mq.matches;
+  }
+
+  function isDesktop() {
+    return window.matchMedia('(min-width: 901px)').matches;
+  }
+
+  function vpSeekPreviewDebounceMs() {
+    return isMobile() ? 120 : 200;
   }
 
   function pmMobileControlsInit() {
@@ -5131,9 +5359,11 @@ footer::before {
 
   async function loadVideos() {
     const url = './videos.json';
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { cache: 'default' });
     if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
-    const data = await res.json();
+    const text = await res.text();
+    pmCatalogSig = text;
+    const data = JSON.parse(text);
     if (!Array.isArray(data)) throw new Error('videos.json must be an array');
     videos = data;
     buildVodIndex();
@@ -6267,11 +6497,13 @@ footer::before {
 
   function bindUi() {
     const search = document.getElementById('searchInput');
+    let searchDebounceTimer = 0;
     if (search) {
       search.addEventListener('input', e => {
         query = String(e.target.value || '');
         visibleCount = PAGE_SIZE;
-        renderAll();
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = window.setTimeout(() => renderAll(), 200);
       });
     }
 
@@ -6774,7 +7006,7 @@ footer::before {
   function vpSeekPreviewScheduleShow(sec) {
     vpSeekPreview.hoverSec = sec;
     clearTimeout(vpSeekPreview.timer);
-    const delay = (vpSeekPreview.scrubbing || vp.isDragging) ? 50 : vpSeekPreview.debounceMs;
+    const delay = (vpSeekPreview.scrubbing || vp.isDragging) ? 50 : vpSeekPreviewDebounceMs();
     vpSeekPreview.timer = window.setTimeout(() => {
       if (vpSeekPreview.hoverSec == null) return;
       void vpSeekPreviewShowAt(vpSeekPreview.hoverSec);
@@ -6996,22 +7228,28 @@ footer::before {
     vpSeekPreview.seekToken++;
   }
 
+  let vpProgressRaf = 0;
+
   function vpUpdateProgress() {
-    const { video, progressFill, progressThumb, timeCurrent, timeDuration } = vpEls();
-    if (!video) return;
-    if (vp.isDragging && vpSeekPreviewTouchScrub()) return;
-    const dur = video.duration;
-    const cur = video.currentTime;
-    if (!isFinite(dur) || dur === 0) return;
-    const pct = ((cur / dur) * 100).toFixed(2) + '%';
-    if (progressFill) progressFill.style.width = pct;
-    if (progressThumb) progressThumb.style.left = pct;
-    if (timeCurrent) timeCurrent.textContent = fmtMmss(cur);
-    if (timeDuration) timeDuration.textContent = vp.isLive ? 'LIVE' : fmtMmss(dur);
-    if (state.modalOpen) {
-      maybeSaveResume(video);
-      vpTsHighlightActive(cur);
-    }
+    if (vpProgressRaf) return;
+    vpProgressRaf = requestAnimationFrame(() => {
+      vpProgressRaf = 0;
+      const { video, progressFill, progressThumb, timeCurrent, timeDuration } = vpEls();
+      if (!video) return;
+      if (vp.isDragging && vpSeekPreviewTouchScrub()) return;
+      const dur = video.duration;
+      const cur = video.currentTime;
+      if (!isFinite(dur) || dur === 0) return;
+      const pct = ((cur / dur) * 100).toFixed(2) + '%';
+      if (progressFill) progressFill.style.width = pct;
+      if (progressThumb) progressThumb.style.left = pct;
+      if (timeCurrent) timeCurrent.textContent = fmtMmss(cur);
+      if (timeDuration) timeDuration.textContent = vp.isLive ? 'LIVE' : fmtMmss(dur);
+      if (state.modalOpen) {
+        maybeSaveResume(video);
+        vpTsHighlightActive(cur);
+      }
+    });
   }
 
   function vpUpdateBuffered() {
@@ -7724,6 +7962,46 @@ footer::before {
     vpTsRenderMarkers();
   }
 
+  async function refreshModalCommunity(videoId) {
+    const id = String(videoId || '');
+    if (!id) return;
+    const tsRoot = document.getElementById('tsList');
+    const csRoot = document.getElementById('wcsList');
+    if (tsRoot) tsRoot.innerHTML = '<div class="wts-empty">Loading watcher timestamps…</div>';
+    if (csRoot) csRoot.innerHTML = '<div class="wcs-empty">Loading comments…</div>';
+    vpTsUpdateCount(0);
+    vpCsUpdateCount(0);
+    setTsMsg('');
+    setWcsMsg('');
+    try {
+      const [videoRes, commentsRes] = await Promise.all([
+        fetch(`/api/videos/${encodeURIComponent(id)}`, { cache: 'no-store' }),
+        fetch(`/api/videos/${encodeURIComponent(id)}/comments`, { cache: 'no-store' })
+      ]);
+      if (!state.modalOpen || state.selectedVideoId !== id) return;
+      if (videoRes.ok) {
+        const data = await videoRes.json();
+        renderTimestamps(data?.timestamps || []);
+      } else {
+        renderTimestamps([]);
+        setTsMsg('Failed to load timestamps');
+      }
+      if (commentsRes.ok) {
+        const data = await commentsRes.json();
+        renderComments(data?.comments || []);
+      } else {
+        renderComments([]);
+        setWcsMsg('Comments unavailable');
+      }
+    } catch {
+      if (!state.modalOpen || state.selectedVideoId !== id) return;
+      renderTimestamps([]);
+      renderComments([]);
+      setTsMsg('Failed to load timestamps');
+      setWcsMsg('Comments unavailable');
+    }
+  }
+
   async function refreshTimestamps(videoId) {
     const id = String(videoId || '');
     if (!id) return;
@@ -8377,8 +8655,7 @@ footer::before {
     vpCsSetCollapsed(isMobile());
     vpDetailRender(v);
     vpDetailSetUrl(id, deepSec != null ? deepSec : null);
-    refreshTimestamps(id);
-    refreshComments(id);
+    refreshModalCommunity(id);
     recordVideoView(id);
     vpInit();
     vpShowControls();

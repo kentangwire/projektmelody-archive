@@ -1,0 +1,47 @@
+# Apply Prisma migrations and sync public/videos.json → Neon.
+#
+# Required repo secret:
+#   DATABASE_URL — Neon Postgres (pooler URL, sslmode=require)
+
+name: Neon sync
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "prisma/**"
+      - "public/videos.json"
+      - "videos.json"
+      - "src/scripts/importNeon.ts"
+      - "src/scripts/importPlan.ts"
+  workflow_dispatch: {}
+
+concurrency:
+  group: neon-sync
+  cancel-in-progress: false
+
+jobs:
+  migrate-and-import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Apply migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npx prisma migrate deploy
+
+      - name: Import catalog to Neon
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PAGES_ORIGIN: https://projektmelody.cc
+        run: npm run import:neon

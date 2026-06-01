@@ -11,12 +11,14 @@
     "start": "node dist/src/server.js",
     "postinstall": "prisma generate",
     "test": "vitest run",
+    "sync:public": "node scripts/sync-public.mjs",
     "import:neon": "tsx src/scripts/importNeon.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@prisma/client": "^6.16.1",
     "cors": "^2.8.5",
     "express": "^4.21.2",

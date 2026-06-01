@@ -6,6 +6,10 @@ function read(p: string): string {
 }
 
 describe('frontend uses API', () => {
+  test('public/index.html mirrors index.html', () => {
+    expect(read('public/index.html')).toBe(read('index.html'));
+  });
+
   test('public/index.html loads catalog from videos.json', () => {
     const html = read('public/index.html');
 
@@ -154,6 +158,17 @@ describe('frontend uses API', () => {
     expect(html).toContain('Watch live on Twitch');
   });
 
+  test('player includes community comments UI', () => {
+    const html = read('public/index.html');
+
+    expect(html).toContain('id="watcherComments"');
+    expect(html).toContain('class="wcs-panel"');
+    expect(html).toContain('function refreshComments');
+    expect(html).toContain('function renderComments');
+    expect(html).toContain('function vpCsStartReply');
+    expect(html).toContain('/comments');
+  });
+
   test('player includes community timestamps UI', () => {
     const html = read('public/index.html');
 
@@ -198,5 +213,16 @@ describe('frontend uses API', () => {
     expect(html).not.toContain('function vpSeekPreviewUseMainVideo');
     expect(html).not.toContain('vpSeekPreviewOnMainSeeked');
     expect(html).toContain("addEventListener('pointerdown'");
+  });
+
+  test('desktop modal uses wide layout with sidebar', () => {
+    const html = read('public/index.html');
+
+    expect(html).toContain('id="modalSide"');
+    expect(html).toContain('class="modal-side"');
+    expect(html).toContain('function isDesktop');
+    expect(html).toContain('function refreshModalCommunity');
+    expect(html).toContain('@media (min-width: 901px)');
+    expect(html).not.toContain('max-width: 420px');
   });
 });
