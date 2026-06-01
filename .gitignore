@@ -1,6 +1,7 @@
 .env
 .env.*
 !.env.example
+runpod/ingest/.env.ingest
 
 node_modules/
 dist/

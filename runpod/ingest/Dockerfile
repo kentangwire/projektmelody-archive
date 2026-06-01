@@ -23,11 +23,13 @@ RUN python3 -m pip install --no-cache-dir requests
 
 WORKDIR /app
 COPY entrypoint.sh /app/entrypoint.sh
+COPY run-url.sh /app/run-url.sh
 COPY github_pr.py /app/github_pr.py
 
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh /app/run-url.sh
 
 ENV MODE=run
 ENV WORK_DIR=/work
+ENV IDLE=1
 
 ENTRYPOINT ["/app/entrypoint.sh"]

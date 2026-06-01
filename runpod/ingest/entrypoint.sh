@@ -21,11 +21,9 @@ MODE="${MODE:-run}"
 WORK_DIR="${WORK_DIR:-/work}"
 TOR_DIR="${WORK_DIR}/torrents"
 OUT_DIR="${WORK_DIR}/out"
+DL_DIR="${WORK_DIR}/downloads"
 QBT_PROFILE="${WORK_DIR}/qbt-profile"
 QBT_PORT="${QBT_PORT:-8080}"
-
-mkdir -p "${TOR_DIR}" "${OUT_DIR}" "${QBT_PROFILE}"
-log "boot MODE=${MODE} WORK_DIR=${WORK_DIR} QBT_PORT=${QBT_PORT}"
 
 QBT_TAIL_PID=""
 
@@ -326,7 +324,79 @@ print(str(int(math.floor(d+0.5))))
 PY
 }
 
-encode_hls() {
+probe_height() {
+  local f="${1}"
+  local h
+  h="$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0:s=x "${f}" 2>/dev/null || true)"
+  if [[ -z "${h}" ]]; then
+    echo "0"
+  else
+    echo "${h}"
+  fi
+}
+
+url_ext_from_path() {
+  python3 - "$1" <<'PY'
+import os, sys, urllib.parse
+path = urllib.parse.urlparse(sys.argv[1]).path
+ext = os.path.splitext(path)[1].lower()
+if ext in (".mp4", ".mkv", ".mov", ".webm", ".avi", ".m4v"):
+  print(ext)
+else:
+  print(".mp4")
+PY
+}
+
+title_from_url() {
+  python3 - "$1" <<'PY'
+import os, sys, urllib.parse
+path = urllib.parse.urlparse(sys.argv[1]).path
+base = os.path.basename(path)
+base = urllib.parse.unquote(base)
+name, _ = os.path.splitext(base)
+name = name.strip()
+print(name if name else "stream")
+PY
+}
+
+title_from_path() {
+  python3 - "$1" <<'PY'
+import os, sys
+base = os.path.basename(sys.argv[1])
+name, _ = os.path.splitext(base)
+name = name.strip()
+print(name if name else "stream")
+PY
+}
+
+ensure_title_from_url() {
+  if [[ -z "${TITLE:-}" ]]; then
+    TITLE="$(title_from_url "${URL}")"
+    export TITLE
+    log "title from filename: ${TITLE}"
+  fi
+}
+
+ensure_title_from_path() {
+  if [[ -z "${TITLE:-}" ]]; then
+    TITLE="$(title_from_path "${1}")"
+    export TITLE
+    log "title from filename: ${TITLE}"
+  fi
+}
+
+download_url() {
+  req URL
+  mkdir -p "${DL_DIR}"
+  local ext dest
+  ext="$(url_ext_from_path "${URL}")"
+  dest="${DL_DIR}/source${ext}"
+  log "downloading URL=${URL} -> ${dest}"
+  curl -fL --retry 5 --retry-delay 5 -C - -o "${dest}" "${URL}"
+  echo "${dest}"
+}
+
+encode_hls_dual() {
   local input="${1}"
   local out="${2}"
   rm -rf "${out}"
@@ -351,6 +421,44 @@ encode_hls() {
     -master_pl_name master.m3u8 \
     -var_stream_map "v:0,a:0,name:1080p v:1,a:1,name:720p" \
     "${out}/%v/index.m3u8"
+}
+
+encode_hls_720_only() {
+  local input="${1}"
+  local out="${2}"
+  rm -rf "${out}"
+  mkdir -p "${out}"
+  ffmpeg_require_nvenc
+
+  ffmpeg -y -hide_banner -loglevel error -i "${input}" \
+    -filter_complex "[0:v]scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2[v720]" \
+    -map "[v720]" -map 0:a:0 \
+    -c:v:0 h264_nvenc -preset p4 -profile:v:0 high -b:v:0 3200k -maxrate:v:0 3520k -bufsize:v:0 6400k -g 120 -keyint_min 120 \
+    -force_key_frames "expr:gte(t,n_forced*4)" \
+    -c:a:0 aac -b:a:0 160k -ac:a:0 2 \
+    -f hls \
+    -hls_time 4 \
+    -hls_playlist_type vod \
+    -hls_flags independent_segments \
+    -hls_segment_filename "${out}/%v/seg-%05d.ts" \
+    -master_pl_name master.m3u8 \
+    -var_stream_map "v:0,a:0,name:720p" \
+    "${out}/%v/index.m3u8"
+}
+
+encode_hls_adaptive() {
+  local input="${1}"
+  local out="${2}"
+  local height
+  height="$(probe_height "${input}")"
+  log "source height=${height}px"
+  if [[ "${height}" -ge 1080 ]]; then
+    encode_hls_dual "${input}" "${out}"
+    export LADDER_VARIANTS="1080,720"
+  else
+    encode_hls_720_only "${input}" "${out}"
+    export LADDER_VARIANTS="720"
+  fi
 }
 
 make_thumb() {
@@ -392,16 +500,22 @@ upload_and_verify() {
   s5cmd "$(s5cmd_base)" sync "${OUT_DIR}/" "s3://${bucket}/${prefix}/"
 
   r2_exists "${prefix}/master.m3u8" || { echo "missing in r2: master.m3u8" >&2; exit 9; }
-  r2_exists "${prefix}/1080p/index.m3u8" || { echo "missing in r2: 1080p/index.m3u8" >&2; exit 9; }
-  r2_exists "${prefix}/720p/index.m3u8" || { echo "missing in r2: 720p/index.m3u8" >&2; exit 9; }
 
-  local seg1080 seg720
-  seg1080="$(grep -Eo 'seg-[0-9]{5}\.ts' "${OUT_DIR}/1080p/index.m3u8" | tail -n 1)"
-  seg720="$(grep -Eo 'seg-[0-9]{5}\.ts' "${OUT_DIR}/720p/index.m3u8" | tail -n 1)"
-  [[ -n "${seg1080}" ]] || { echo "could not parse 1080p last segment" >&2; exit 9; }
-  [[ -n "${seg720}" ]] || { echo "could not parse 720p last segment" >&2; exit 9; }
-  r2_exists "${prefix}/1080p/${seg1080}" || { echo "missing in r2: 1080p/${seg1080}" >&2; exit 9; }
-  r2_exists "${prefix}/720p/${seg720}" || { echo "missing in r2: 720p/${seg720}" >&2; exit 9; }
+  verify_variant_tail() {
+    local variant="${1}"
+    r2_exists "${prefix}/${variant}/index.m3u8" || { echo "missing in r2: ${variant}/index.m3u8" >&2; exit 9; }
+    local seg
+    seg="$(grep -Eo 'seg-[0-9]{5}\.ts' "${OUT_DIR}/${variant}/index.m3u8" | tail -n 1)"
+    [[ -n "${seg}" ]] || { echo "could not parse ${variant} last segment" >&2; exit 9; }
+    r2_exists "${prefix}/${variant}/${seg}" || { echo "missing in r2: ${variant}/${seg}" >&2; exit 9; }
+  }
+
+  if [[ "${LADDER_VARIANTS:-}" == *"1080"* ]]; then
+    verify_variant_tail "1080p"
+  fi
+  if [[ "${LADDER_VARIANTS:-}" == *"720"* ]]; then
+    verify_variant_tail "720p"
+  fi
 }
 
 create_pr() {
@@ -432,11 +546,55 @@ create_pr() {
 }
 
 cleanup() {
-  rm -rf "${TOR_DIR}" "${OUT_DIR}" "${QBT_PROFILE}" || true
+  rm -rf "${TOR_DIR}" "${OUT_DIR}" "${QBT_PROFILE}" "${DL_DIR}" || true
 }
 
-main() {
+finish_ingest() {
+  local input_file="${1}"
+  DURATION="$(probe_duration "${input_file}")"
+  export DURATION
+
+  log "thumbnail..."
+  make_thumb "${input_file}" "${OUT_DIR}"
+
+  log "upload+verify..."
+  upload_and_verify
+  log "creating pr..."
+  create_pr
+  log "cleanup..."
+  cleanup
+}
+
+main_url() {
+  req URL
+  req DATE
+
+  mkdir -p "${DL_DIR}" "${OUT_DIR}"
+  log "boot source=URL WORK_DIR=${WORK_DIR}"
+
+  ensure_title_from_url
+
+  STREAM_SLUG="$(slugify "${TITLE}")"
+  STREAM_ID="${DATE}-${STREAM_SLUG}"
+  export STREAM_ID
+  export R2_PREFIX="streams/${STREAM_ID}"
+
+  INPUT_FILE="$(download_url)"
+  if [[ ! -f "${INPUT_FILE}" ]]; then
+    log "download failed: ${INPUT_FILE}"
+    exit 10
+  fi
+
+  log "encoding hls (adaptive)..."
+  encode_hls_adaptive "${INPUT_FILE}" "${OUT_DIR}"
+  finish_ingest "${INPUT_FILE}"
+}
+
+main_magnet() {
   req MAGNET
+
+  mkdir -p "${TOR_DIR}" "${OUT_DIR}" "${QBT_PROFILE}"
+  log "boot MODE=${MODE} WORK_DIR=${WORK_DIR} QBT_PORT=${QBT_PORT}"
 
   qbt_start
   log "adding magnet..."
@@ -455,14 +613,15 @@ main() {
     exit 2
   fi
 
-  req TITLE
   req DATE
+
+  req SELECT_PATH
+  ensure_title_from_path "${SELECT_PATH}"
   STREAM_SLUG="$(slugify "${TITLE}")"
   STREAM_ID="${DATE}-${STREAM_SLUG}"
   export STREAM_ID
   export R2_PREFIX="streams/${STREAM_ID}"
 
-  req SELECT_PATH
   log "selecting file SELECT_PATH=${SELECT_PATH}"
   qbt_select_file "${HASH}" "${SELECT_PATH}"
   log "downloading..."
@@ -474,21 +633,23 @@ main() {
     exit 10
   fi
 
-  DURATION="$(probe_duration "${INPUT_FILE}")"
-  export DURATION
-
   log "encoding hls..."
-  encode_hls "${INPUT_FILE}" "${OUT_DIR}"
-  log "thumbnail..."
-  make_thumb "${INPUT_FILE}" "${OUT_DIR}"
-
-  log "upload+verify..."
-  upload_and_verify
-  log "creating pr..."
-  create_pr
-  log "cleanup..."
-  cleanup
+  encode_hls_dual "${INPUT_FILE}" "${OUT_DIR}"
+  export LADDER_VARIANTS="1080,720"
+  finish_ingest "${INPUT_FILE}"
 }
 
 trap on_exit EXIT
-main
+
+if [[ -n "${URL:-}" ]]; then
+  main_url
+elif [[ -n "${MAGNET:-}" ]]; then
+  main_magnet
+elif [[ "${IDLE:-1}" == "1" ]]; then
+  log "idle — no URL or MAGNET (persistent pod mode)"
+  log "run ingest: /app/run-url.sh \"https://example.com/video.mp4\" [YYYY-MM-DD]"
+  exec sleep infinity
+else
+  log "missing URL or MAGNET (set IDLE=1 to keep pod running)"
+  exit 2
+fi
