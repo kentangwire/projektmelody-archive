@@ -8,7 +8,7 @@
     "tags": ["Stream"],
     "pinned": true,
     "ready": true,
-    "thumbSrc": "./assets/mouth-action-2026-05-30-thumb.jpg",
+    "thumbSrc": "/assets/mouth-action-2026-05-30-thumb.jpg",
     "thumbClass": "t2",
     "monogram": "PM",
     "hlsSrc": "/videos/mouth-action-2026-05-30/master.m3u8"
@@ -22,7 +22,7 @@
     "tags": ["Stream"],
     "pinned": false,
     "ready": true,
-    "thumbSrc": "./assets/projektmelody_video_01_2026-05-19-04_36_50-thumb.jpg",
+    "thumbSrc": "/assets/projektmelody_video_01_2026-05-19-04_36_50-thumb.jpg",
     "thumbClass": "t2",
     "monogram": "PM",
     "hlsSrc": "/videos/projektmelody_video_01_2026-05-19-04_36_50/master.m3u8"
@@ -31,13 +31,39 @@
     "id": "v-2024-0913-source",
     "title": "Stream Source — Sep 13, 2024",
     "date": "2024-09-13",
-    "duration": 0,
+    "duration": 7155,
     "views": 0,
     "tags": ["Stream"],
     "pinned": false,
-    "thumbSrc": "./assets/v-2024-0913-source-thumb.jpg",
+    "thumbSrc": "/assets/v-2024-0913-source-thumb.jpg",
     "thumbClass": "t1",
     "monogram": "PM",
     "hlsSrc": "/videos/v-2024-0913-source/master.m3u8"
+  },
+  {
+    "id": "projektmelody-2023-01-29",
+    "title": "projektmelody_2023-01-29_22-02-01",
+    "date": "2023-01-29",
+    "duration": 5108,
+    "views": 0,
+    "tags": ["Stream"],
+    "pinned": false,
+    "thumbSrc": "/videos/projektmelody_2023-01-29/thumb.jpg",
+    "thumbClass": "t1",
+    "monogram": "PM",
+    "hlsSrc": "/videos/projektmelody_2023-01-29/index.m3u8"
+  },
+  {
+    "id": "projektmelody-2023-01-25",
+    "title": "projektmelody_2023-01-25",
+    "date": "2023-01-25",
+    "duration": 10155,
+    "views": 0,
+    "tags": ["Stream"],
+    "pinned": false,
+    "thumbSrc": "/videos/projektmelody_2023-01-25/thumb.jpg",
+    "thumbClass": "t1",
+    "monogram": "PM",
+    "hlsSrc": "/videos/projektmelody_2023-01-25/index.m3u8"
   }
 ]

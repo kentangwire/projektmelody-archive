@@ -3,6 +3,7 @@ import express from 'express';
 import { getEnv } from './env';
 import { errorHandler } from './middleware/errorHandler';
 import { prisma } from './prisma';
+import { createCommentsRouter } from './routes/comments';
 import { createTimestampsRouter } from './routes/timestamps';
 import { createVideosRouter } from './routes/videos';
 
@@ -30,6 +31,7 @@ export function createApp() {
 
   app.use('/api/videos', createVideosRouter({ prisma: prisma as any }));
   app.use('/api/videos', createTimestampsRouter({ prisma: prisma as any }));
+  app.use('/api/videos', createCommentsRouter({ prisma: prisma as any }));
 
   app.use(errorHandler);
 

@@ -19,8 +19,29 @@ model Video {
 
   videoTags  VideoTag[]
   timestamps Timestamp[]
+  comments   Comment[]
 
   @@index([createdAt])
+}
+
+model Comment {
+  id          String   @id @default(cuid())
+  videoId     String
+  parentId    String?
+  body        String   @db.VarChar(500)
+  displayName String?  @db.VarChar(32)
+  timeInSec   Int?
+  userIp      String   @db.VarChar(45)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  video   Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[] @relation("CommentReplies")
+
+  @@index([videoId, createdAt])
+  @@index([videoId, parentId, createdAt])
+  @@index([videoId, userIp, createdAt])
 }
 
 model Tag {
