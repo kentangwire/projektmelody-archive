@@ -27,6 +27,8 @@ GITHUB_REPO=kentangwire/projektmelody-archive
 GITHUB_TOKEN=ghp_...
 WORK_DIR=/work
 IDLE=1
+NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+NVIDIA_VISIBLE_DEVICES=all
 ```
 
 Do **not** set `URL` or `MAGNET` on the pod template for a persistent workflow.
@@ -38,8 +40,10 @@ Remove any empty `MAGNET=` from pod env if present.
 The container **idles** when no job is configured (`IDLE=1`, default). Open **Web Terminal**:
 
 ```bash
-# Verify NVENC
+# Verify NVENC (needs NVIDIA_DRIVER_CAPABILITIES including video — restart pod after changing)
+ldconfig -p | grep nvidia-encode || echo "missing libnvidia-encode — add video to NVIDIA_DRIVER_CAPABILITIES and restart"
 ffmpeg -hide_banner -encoders 2>/dev/null | grep h264_nvenc
+```
 
 # Verify volume
 df -h /work

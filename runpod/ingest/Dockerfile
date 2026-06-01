@@ -44,5 +44,7 @@ RUN chmod +x /app/entrypoint.sh /app/run-url.sh
 ENV MODE=run
 ENV WORK_DIR=/work
 ENV IDLE=1
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+ENV NVIDIA_VISIBLE_DEVICES=all
 
 ENTRYPOINT ["/app/entrypoint.sh"]

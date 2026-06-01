@@ -351,6 +351,9 @@ ffmpeg_require_nvenc() {
     echo "hint: deploy an NVIDIA GPU pod (not CPU)" >&2
   fi
   echo "hint: install jellyfin-ffmpeg to /opt/jellyfin-ffmpeg or pull latest ingest image" >&2
+  if ! ldconfig -p 2>/dev/null | grep -q nvidia-encode; then
+    echo "hint: set NVIDIA_DRIVER_CAPABILITIES=compute,video,utility on the pod, then restart" >&2
+  fi
   exit 7
 }
 
