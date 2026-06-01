@@ -1,0 +1,11 @@
+name = "projektmelody"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "public"
+
+[[r2_buckets]]
+binding = "R2_VIDEOS"
+bucket_name = "r2-videos"
+
+[dev]
+port = 8788
+local_protocol = "http"
