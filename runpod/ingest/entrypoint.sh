@@ -29,20 +29,21 @@ resolve_ffmpeg_bins() {
     return 0
   fi
 
-  local dir cand
-  for dir in /opt/jellyfin-ffmpeg /usr/local/bin; do
-    if [[ -x "${dir}/ffmpeg" ]]; then
-      FFMPEG_BIN="${dir}/ffmpeg"
-      FFPROBE_BIN="${dir}/ffprobe"
-      export FFMPEG_BIN FFPROBE_BIN
-      return 0
-    fi
-  done
-
-  cand="$(find /opt/jellyfin-ffmpeg -maxdepth 3 -name ffmpeg -type f 2>/dev/null | head -1 || true)"
+  local cand probe
+  cand="$(find /opt/jellyfin-ffmpeg -name ffmpeg -type f 2>/dev/null | head -1 || true)"
+  if [[ -z "${cand}" && -x /usr/local/bin/ffmpeg ]]; then
+    cand="/usr/local/bin/ffmpeg"
+  fi
+  if [[ -z "${cand}" && -x /opt/jellyfin-ffmpeg/ffmpeg ]]; then
+    cand="/opt/jellyfin-ffmpeg/ffmpeg"
+  fi
   if [[ -n "${cand}" && -x "${cand}" ]]; then
     FFMPEG_BIN="${cand}"
-    FFPROBE_BIN="$(dirname "${cand}")/ffprobe"
+    probe="$(dirname "${cand}")/ffprobe"
+    if [[ ! -x "${probe}" ]]; then
+      probe="$(find /opt/jellyfin-ffmpeg -name ffprobe -type f 2>/dev/null | head -1 || true)"
+    fi
+    FFPROBE_BIN="${probe:-ffprobe}"
     export FFMPEG_BIN FFPROBE_BIN
     return 0
   fi
@@ -50,6 +51,16 @@ resolve_ffmpeg_bins() {
   FFMPEG_BIN=ffmpeg
   FFPROBE_BIN=ffprobe
   export FFMPEG_BIN FFPROBE_BIN
+}
+
+NVENC_FIX_SO="${NVENC_FIX_SO:-/opt/libnvenc_fix.so}"
+
+run_nvenc_ffmpeg() {
+  if [[ -n "${NVENC_FIX_SO:-}" && -f "${NVENC_FIX_SO}" ]]; then
+    LD_PRELOAD="${NVENC_FIX_SO}${LD_PRELOAD:+:${LD_PRELOAD}}" "${FFMPEG_BIN}" "$@"
+  else
+    "${FFMPEG_BIN}" "$@"
+  fi
 }
 
 MODE="${MODE:-run}"
@@ -341,27 +352,26 @@ PY
 ffmpeg_require_nvenc() {
   resolve_ffmpeg_bins
   log "ffmpeg bin=${FFMPEG_BIN}"
+  log "ffmpeg version=$("${FFMPEG_BIN}" -hide_banner -version 2>&1 | head -1 || echo unknown)"
 
-  # ffmpeg prints -encoders to stderr; redirecting stderr to /dev/null hides h264_nvenc.
-  if ! "${FFMPEG_BIN}" -hide_banner -encoders 2>&1 | grep -q "h264_nvenc"; then
-    echo "ffmpeg build missing h264_nvenc encoder" >&2
-    echo "hint: install jellyfin-ffmpeg to /opt/jellyfin-ffmpeg or pull latest ingest image" >&2
-    exit 7
-  fi
-
-  if ! "${FFMPEG_BIN}" -hide_banner -f lavfi -i testsrc=size=1280x720:rate=30 -t 1 \
+  if run_nvenc_ffmpeg -hide_banner -f lavfi -i testsrc=size=1280x720:rate=30 -t 1 \
       -c:v h264_nvenc -f null - >/dev/null 2>&1; then
-    echo "NVENC runtime init failed (GPU visible but encode session could not open)" >&2
-    if command -v nvidia-smi >/dev/null 2>&1; then
-      nvidia-smi -L >&2 || true
-    fi
-    if ! ldconfig -p 2>/dev/null | grep -q nvidia-encode; then
-      echo "hint: set NVIDIA_DRIVER_CAPABILITIES=compute,video,utility on the pod, then restart" >&2
-    else
-      echo "hint: pull latest ingest image (includes libnvenc_fix for multi-GPU RunPod hosts)" >&2
-    fi
-    exit 7
+    return 0
   fi
+
+  echo "NVENC unavailable (runtime encode probe failed)" >&2
+  "${FFMPEG_BIN}" -hide_banner -encoders 2>&1 | grep -i nvenc >&2 || true
+  if command -v nvidia-smi >/dev/null 2>&1; then
+    nvidia-smi -L >&2 || true
+  else
+    echo "hint: deploy an NVIDIA GPU pod (not CPU)" >&2
+  fi
+  if ! ldconfig -p 2>/dev/null | grep -q nvidia-encode; then
+    echo "hint: set NVIDIA_DRIVER_CAPABILITIES=compute,video,utility on the pod, then restart" >&2
+  else
+    echo "hint: pull latest ingest image (libnvenc_fix for multi-GPU RunPod hosts)" >&2
+  fi
+  exit 7
 }
 
 probe_duration() {
@@ -461,7 +471,7 @@ encode_hls_dual() {
   mkdir -p "${out}"
   ffmpeg_require_nvenc
 
-  "${FFMPEG_BIN}" -y -hide_banner -loglevel error -i "${input}" \
+  run_nvenc_ffmpeg -y -hide_banner -loglevel error -i "${input}" \
     -filter_complex "[0:v]split=2[v0][v1];[v0]scale=w=1920:h=1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2[v1080];[v1]scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2[v720]" \
     -map "[v1080]" -map 0:a:0 \
     -c:v:0 h264_nvenc -preset p4 -profile:v:0 high -b:v:0 6000k -maxrate:v:0 6600k -bufsize:v:0 12000k -g 120 -keyint_min 120 \
@@ -488,7 +498,7 @@ encode_hls_720_only() {
   mkdir -p "${out}"
   ffmpeg_require_nvenc
 
-  "${FFMPEG_BIN}" -y -hide_banner -loglevel error -i "${input}" \
+  run_nvenc_ffmpeg -y -hide_banner -loglevel error -i "${input}" \
     -filter_complex "[0:v]scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2[v720]" \
     -map "[v720]" -map 0:a:0 \
     -c:v:0 h264_nvenc -preset p4 -profile:v:0 high -b:v:0 3200k -maxrate:v:0 3520k -bufsize:v:0 6400k -g 120 -keyint_min 120 \

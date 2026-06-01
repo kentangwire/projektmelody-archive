@@ -27,6 +27,8 @@ RUN curl -fsSL -o /tmp/jffm.tar.xz \
   && test -n "${FFMPEG}" && test -x "${FFMPEG}" \
   && ln -sf "${FFMPEG}" /usr/local/bin/ffmpeg \
   && ln -sf "${FFPROBE}" /usr/local/bin/ffprobe \
+  && ln -sf "${FFMPEG}" /opt/jellyfin-ffmpeg/ffmpeg \
+  && ln -sf "${FFPROBE}" /opt/jellyfin-ffmpeg/ffprobe \
   && rm /tmp/jffm.tar.xz
 
 RUN curl -fsSL -o /tmp/s5cmd.tar.gz "https://github.com/peak/s5cmd/releases/download/v${S5CMD_VERSION}/s5cmd_${S5CMD_VERSION}_Linux-64bit.tar.gz" \
@@ -52,6 +54,5 @@ ENV WORK_DIR=/work
 ENV IDLE=1
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
 ENV NVIDIA_VISIBLE_DEVICES=all
-ENV LD_PRELOAD=/opt/libnvenc_fix.so
 
 ENTRYPOINT ["/app/entrypoint.sh"]
