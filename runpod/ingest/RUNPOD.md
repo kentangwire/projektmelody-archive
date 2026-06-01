@@ -69,7 +69,7 @@ FFPROBE_BIN="$(find /opt/jellyfin-ffmpeg -name ffprobe -type f | head -1)"
 ln -sf "$FFMPEG_BIN" /usr/local/bin/ffmpeg
 ln -sf "$FFPROBE_BIN" /usr/local/bin/ffprobe
 
-"$FFMPEG_BIN" -hide_banner -encoders 2>/dev/null | grep h264_nvenc
+"$FFMPEG_BIN" -hide_banner -encoders 2>&1 | grep h264_nvenc
 "$FFPROBE_BIN" -v error -select_streams v:0 -show_entries stream=height -of csv=p=0:s=x /workspace/downloads/source.mkv 2>/dev/null || true
 
 /app/run-url.sh "$(printf '%s' 'https://YOUR-FRESH-DIRECT-LINK.mkv' | tr -d '\r\n')"
