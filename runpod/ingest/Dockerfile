@@ -41,13 +41,16 @@ RUN python3 -m pip install --no-cache-dir requests
 WORKDIR /app
 COPY entrypoint.sh /app/entrypoint.sh
 COPY run-url.sh /app/run-url.sh
+COPY watch-progress.sh /app/watch-progress.sh
+COPY watch-upload.sh /app/watch-upload.sh
+COPY watch-upload.py /app/watch-upload.py
 COPY github_pr.py /app/github_pr.py
 COPY nvenc_fix.c /tmp/nvenc_fix.c
 
 RUN gcc -shared -fPIC -O2 -o /opt/libnvenc_fix.so /tmp/nvenc_fix.c -ldl \
   && rm /tmp/nvenc_fix.c
 
-RUN chmod +x /app/entrypoint.sh /app/run-url.sh
+RUN chmod +x /app/entrypoint.sh /app/run-url.sh /app/watch-progress.sh /app/watch-upload.sh /app/watch-upload.py
 
 ENV MODE=run
 ENV WORK_DIR=/work
