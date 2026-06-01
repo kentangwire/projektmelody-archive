@@ -232,16 +232,18 @@ nav a.active::after {
 
 .header-right { margin-left: auto; gap: 1rem; }
 
+.header-kofi,
 #kofiHeader {
   display: flex;
   align-items: center;
-  height: 34px;
-  overflow: visible;
+  justify-content: center;
+  min-height: 34px;
+  overflow: hidden;
 }
 
 #kofiHeader .btn-container {
   transform: scale(0.72);
-  transform-origin: left center;
+  transform-origin: center center;
   margin: 0 !important;
 }
 
@@ -3610,14 +3612,73 @@ footer::before {
 }
 
 @media (max-width: 720px) {
-  header { padding: 0.4rem 1rem 0.45rem; min-height: 0; flex-wrap: nowrap; }
-  .nav-toggle { display: inline-flex; padding: 0.35rem 0.75rem; }
-  .header-toolbar { gap: 0.5rem; }
+  header {
+    padding: 0.6rem 1rem 0.7rem;
+    gap: 0.55rem;
+    align-items: center;
+  }
+
+  .logo-brand {
+    width: 100%;
+    justify-content: center;
+    padding: 0.15rem 0 0.1rem;
+  }
+
+  .header-kofi,
+  #kofiHeader {
+    display: none;
+  }
+
+  .header-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding-bottom: 0;
+  }
+
+  .header-left {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .header-login {
+    grid-column: 2;
+    justify-self: end;
+  }
+
+  .nav-toggle,
+  .header-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 5.5rem;
+    min-height: 40px;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
   .header-search {
-    flex: 1;
-    margin-left: 0;
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0;
     max-width: none;
   }
+
+  .header-search .search-input {
+    width: 100%;
+    font-size: 0.8rem;
+    padding-left: 2rem;
+    text-align: left;
+  }
+
+  .header-toolbar .search-input {
+    min-height: 40px;
+  }
+
   nav {
     position: absolute;
     top: 100%;
@@ -3655,14 +3716,13 @@ footer::before {
 }
 
 @media (max-width: 520px) {
-  header { padding: 0.35rem 0.75rem 0.4rem; }
-  .logo-brand { gap: 0.55rem; }
+  header { padding: 0.55rem 0.85rem 0.65rem; }
   .logo-brand .logo-icon { width: 26px; height: 26px; }
-  .logo-brand .logo-text { font-size: 0.92rem; }
-  .header-toolbar { gap: 0.4rem; }
-  #kofiHeader .btn-container { transform: scale(0.65); }
-  .header-search .search-input { font-size: 0.75rem; }
-  .header-login { padding-left: 0.7rem; padding-right: 0.7rem; font-size: 0.55rem; }
+  .logo-brand .logo-text { font-size: 0.88rem; }
+  .header-toolbar { max-width: 100%; gap: 0.45rem; }
+  .nav-toggle,
+  .header-login { width: 5rem; min-height: 38px; font-size: 0.54rem; }
+  .header-search .search-input { font-size: 0.78rem; }
   .section { padding: 2.1rem 0.9rem; }
   .vgrid { grid-template-columns: 1fr; }
   .vc-body { padding: 0.85rem 0.9rem 0.95rem; }
@@ -4012,8 +4072,8 @@ footer::before {
   <div class="header-toolbar">
     <div class="header-left">
       <button class="btn-primary nav-toggle" id="navToggle" type="button" aria-controls="mainNav" aria-expanded="false">MENU</button>
-      <div id="kofiHeader"></div>
     </div>
+    <div id="kofiHeader" class="header-kofi" aria-label="Support on Ko-fi"></div>
     <nav id="mainNav" aria-label="Primary">
       <a href="#home" data-nav="home" class="active"><span class="nav-short">HOME</span><span class="nav-full">All VODs / Home</span></a>
       <a href="#recent" data-nav="recent"><span class="nav-short">RECENT</span><span class="nav-full">Recent Streams</span></a>
@@ -5302,7 +5362,8 @@ footer::before {
     if (!header && !footer) return;
     const api = window.kofiwidget2;
     if (!api || typeof api.init !== 'function' || typeof api.getHTML !== 'function') return;
-    api.init(KOFI_TEXT, getSiteCyan(), KOFI_ID);
+    const kofiLabel = window.matchMedia('(max-width: 720px)').matches ? 'Ko-fi' : KOFI_TEXT;
+    api.init(kofiLabel, getSiteCyan(), KOFI_ID);
     const tmp = document.createElement('div');
     tmp.innerHTML = api.getHTML();
 

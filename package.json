@@ -6,7 +6,11 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "node scripts/dev-site.mjs",
+    "dev:site": "node scripts/dev-site.mjs",
+    "dev:layout": "node scripts/dev-static.mjs",
+    "dev:static": "node scripts/dev-static.mjs",
+    "dev:api": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/src/server.js",
     "postinstall": "prisma generate",

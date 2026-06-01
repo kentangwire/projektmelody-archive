@@ -14,6 +14,20 @@
     "hlsSrc": "/videos/mouth-action-2026-05-30/master.m3u8"
   },
   {
+    "id": "2026-06-01-projektmelody-2023-01-22-21-05-03",
+    "title": "projektmelody_2023-01-22_21-05-03",
+    "date": "2023-01-22",
+    "duration": 10932,
+    "views": 0,
+    "tags": ["Stream"],
+    "pinned": false,
+    "ready": true,
+    "thumbSrc": "/videos/streams/2026-06-01-projektmelody-2023-01-22-21-05-03/thumb.jpg",
+    "thumbClass": "t2",
+    "monogram": "PM",
+    "hlsSrc": "/videos/streams/2026-06-01-projektmelody-2023-01-22-21-05-03/master.m3u8"
+  },
+  {
     "id": "projektmelody_video_01_2026-05-19-04_36_50",
     "title": "Stream VOD — May 19, 2026",
     "date": "2026-05-19",

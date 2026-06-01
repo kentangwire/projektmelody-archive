@@ -142,7 +142,10 @@ describe('frontend uses API', () => {
     expect(html).toContain('class="header-toolbar"');
     expect(html).toContain('class="search-wrap header-search"');
     expect(html).toContain('class="btn-primary header-login"');
-    expect(html).toContain('#kofiHeader .btn-container');
+    expect(html).toContain('id="kofiHeader" class="header-kofi"');
+    expect(html).toContain('.header-toolbar {');
+    expect(html).toContain('grid-template-columns: 1fr 1fr');
+    expect(html).toMatch(/#kofiHeader[\s\S]{0,120}display:\s*none/);
   });
 
   test('about section includes streamer info and dynamic hooks', () => {
@@ -223,6 +226,6 @@ describe('frontend uses API', () => {
     expect(html).toContain('function isDesktop');
     expect(html).toContain('function refreshModalCommunity');
     expect(html).toContain('@media (min-width: 901px)');
-    expect(html).not.toContain('max-width: 420px');
+    expect(html).not.toMatch(/\.modal\.modal-has-detail[\s\S]{0,80}max-width:\s*420px/);
   });
 });

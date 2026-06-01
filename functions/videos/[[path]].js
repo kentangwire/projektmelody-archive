@@ -26,6 +26,12 @@ export async function onRequestGet(context) {
       ? 'video/mp4'
       : ext === 'm3u8'
           ? 'application/vnd.apple.mpegurl'
+          : ext === 'jpg' || ext === 'jpeg'
+              ? 'image/jpeg'
+              : ext === 'png'
+                  ? 'image/png'
+                  : ext === 'webp'
+                      ? 'image/webp'
           : ext === 'ts'
               ? 'video/mp2t'
               : ext === 'm4s'
@@ -39,6 +45,8 @@ export async function onRequestGet(context) {
     const headers = new Headers();
     headers.set('Content-Type', contentType);
     headers.set('Accept-Ranges', 'bytes');
+    headers.set('Access-Control-Allow-Origin', '*');
+    headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
     if (ext === 'm3u8') headers.set('Cache-Control', 'public, max-age=60');
     else headers.set('Cache-Control', 'public, max-age=31536000, immutable');
     if (obj.size != null) headers.set('Content-Length', String(obj.size));
@@ -67,6 +75,8 @@ export async function onRequestGet(context) {
   headers.set('Accept-Ranges', 'bytes');
   headers.set('Content-Range', `bytes ${start}-${end}/${size}`);
   headers.set('Content-Length', String(end - start + 1));
+  headers.set('Access-Control-Allow-Origin', '*');
+  headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
   if (ext === 'm3u8') headers.set('Cache-Control', 'public, max-age=60');
   else headers.set('Cache-Control', 'public, max-age=31536000, immutable');
   if (obj.httpEtag) headers.set('ETag', obj.httpEtag);
@@ -109,4 +119,3 @@ function parseRange(rangeHeader, size) {
 
   return { start, end };
 }
-
