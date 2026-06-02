@@ -57,12 +57,14 @@ export function ensureVideo(stats, id) {
   return row;
 }
 
+import { filterPublicTags } from './tagAllowlist.js';
+
 export function publicVideoRow(row) {
   return {
     views: Number(row?.views) || 0,
     likes: Number(row?.likes) || 0,
     dislikes: Number(row?.dislikes) || 0,
-    tags: row?.tags && typeof row.tags === 'object' ? row.tags : {}
+    tags: filterPublicTags(row?.tags)
   };
 }
 

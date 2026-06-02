@@ -32,6 +32,8 @@ export async function onRequestGet(context) {
                   ? 'image/png'
                   : ext === 'webp'
                       ? 'image/webp'
+                  : ext === 'vtt'
+                      ? 'text/vtt; charset=utf-8'
           : ext === 'ts'
               ? 'video/mp2t'
               : ext === 'm4s'

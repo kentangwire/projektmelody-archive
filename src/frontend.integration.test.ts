@@ -17,6 +17,18 @@ describe('frontend uses API', () => {
     expect(html).toContain('videos.json must be an array');
   });
 
+  test('frontend includes NSFW age gate before site content', () => {
+    const html = read('public/index.html');
+
+    expect(html).toContain('id="ageGate"');
+    expect(html).toContain('id="ageGateEnter"');
+    expect(html).toContain('id="ageGateLeave"');
+    expect(html).toContain('pm_age_verified');
+    expect(html).toContain('function pmInitAgeGate');
+    expect(html).toContain('function pmStartApp');
+    expect(html).toContain('html.age-verified .age-gate');
+  });
+
   test('landing page copy is not placeholder', () => {
     const html = read('public/index.html');
 
@@ -44,6 +56,34 @@ describe('frontend uses API', () => {
     expect(html).toContain('id="qualityBtn"');
     expect(html).toContain('id="qualityPanel"');
     expect(html).toContain("pm_quality");
+  });
+
+  test('frontend includes NSFW closed captions', () => {
+    const html = read('public/index.html');
+
+    expect(html).toContain('id="vpCc"');
+    expect(html).toContain('id="ccBtn"');
+    expect(html).toContain('id="ccChk"');
+    expect(html).toContain('NSFW CC');
+    expect(html).toContain('function vpToggleCc');
+    expect(html).toContain('function vpCcLoadForVideo');
+    expect(html).toContain('function vpCcGenerateFromVideo');
+    expect(html).toContain('function vpCcCaptureSegment');
+    expect(html).toContain('id="ccGenBtn"');
+    expect(html).toContain('PM_CC_SEGMENT_SEC');
+    expect(html).toContain('pm_cc_cache');
+    expect(html).toContain('/nsfw.vtt');
+  });
+
+  test('HLS uses native playback on iOS only and hls.js elsewhere', () => {
+    const html = read('public/index.html');
+
+    expect(html).toContain('function shouldUseNativeHls');
+    expect(html).toContain('return vpIsIOS() && canNativeHls');
+    expect(html).toContain('function createHlsInstance');
+    expect(html).toContain('lowLatencyMode: false');
+    expect(html).toContain('x5-playsinline');
+    expect(html).toContain('function vpPlayWhenReady');
   });
 
   test('frontend includes rebuilt player UI hooks', () => {
@@ -143,9 +183,10 @@ describe('frontend uses API', () => {
     expect(html).toContain('class="search-wrap header-search"');
     expect(html).toContain('class="btn-primary header-login"');
     expect(html).toContain('id="kofiHeader" class="header-kofi"');
-    expect(html).toContain('.header-toolbar {');
-    expect(html).toContain('grid-template-columns: 1fr 1fr');
-    expect(html).toMatch(/#kofiHeader[\s\S]{0,120}display:\s*none/);
+    expect(html).toContain('id="archiveSearchAnchor"');
+    expect(html).toContain('function pmLayoutHeaderSearch');
+    expect(html).toContain('grid-template-columns: minmax(4.8rem, auto) minmax(0, 1fr) minmax(4.8rem, auto)');
+    expect(html).toContain("matchMedia('(max-width: 900px)')");
   });
 
   test('about section includes streamer info and dynamic hooks', () => {
@@ -216,6 +257,28 @@ describe('frontend uses API', () => {
     expect(html).not.toContain('function vpSeekPreviewUseMainVideo');
     expect(html).not.toContain('vpSeekPreviewOnMainSeeked');
     expect(html).toContain("addEventListener('pointerdown'");
+  });
+
+  test('touch player layout includes foldable viewport detection', () => {
+    const html = read('public/index.html');
+
+    expect(html).toContain('PM_TOUCH_PLAYER_MQ');
+    expect(html).toContain('pm-touch-player');
+    expect(html).toContain('pmBindViewportListeners');
+    expect(html).toContain('visualViewport');
+    expect(html).toContain('viewport-fit=cover');
+    expect(html).toMatch(/max-width: 900px\) and \(hover: hover\)/);
+  });
+
+  test('catalog thumbnails generate from middle HLS segment', () => {
+    const html = read('public/index.html');
+
+    expect(html).toContain('pm-thumbs-v2');
+    expect(html).toContain('function pmThumbPickSeekSec');
+    expect(html).toContain('return Math.max(4, dur / 2)');
+    expect(html).toContain('function pmGenThumbFromHls');
+    expect(html).toContain('pmBuildSegmentPlaylist(seg)');
+    expect(html).toContain('function pmEnsureThumbForId');
   });
 
   test('desktop modal uses wide layout with sidebar', () => {

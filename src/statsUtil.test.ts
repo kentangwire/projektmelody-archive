@@ -12,9 +12,10 @@ describe('statsUtil', () => {
     const row = ensureVideo(stats, 'v1');
     row.views = 2;
     row.likes = 1;
-    row.tags = { Gamer: 3 };
+    row.tags = { 'Squirt Mode': 3, Gamer: 2 };
     expect(summarizeStats(stats).totalViews).toBe(2);
-    expect(publicVideoRow(row).tags.Gamer).toBe(3);
+    expect(publicVideoRow(row).tags['Squirt Mode']).toBe(3);
+    expect(publicVideoRow(row).tags.Gamer).toBeUndefined();
     expect(publicVideoRow(row).tagVoters).toBeUndefined();
   });
 });
