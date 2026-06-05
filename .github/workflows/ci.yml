@@ -23,7 +23,7 @@ jobs:
       - name: Verify public/ mirrors source
         run: |
           node scripts/sync-public.mjs
-          git diff --exit-code index.html public/index.html videos.json public/videos.json || {
+          git diff --exit-code index.html public/index.html videos.json public/catalog-source.json || {
             echo "::error::Run npm run sync:public and commit public/ changes"
             exit 1
           }

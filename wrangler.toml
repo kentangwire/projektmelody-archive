@@ -6,6 +6,10 @@ pages_build_output_dir = "public"
 binding = "R2_VIDEOS"
 bucket_name = "r2-videos"
 
+[[r2_buckets]]
+binding = "R2_MY_VIDEOS"
+bucket_name = "my-videos"
+
 [dev]
 port = 8788
 local_protocol = "http"

@@ -533,7 +533,47 @@ make_thumb() {
   resolve_ffmpeg_bins
   local input="${1}"
   local out="${2}"
-  "${FFMPEG_BIN}" -y -hide_banner -loglevel error -ss 300 -i "${input}" -frames:v 1 -q:v 2 "${out}/thumb.jpg" || true
+  local dur ss="300"
+  dur="$("${FFPROBE_BIN}" -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${input}" 2>/dev/null | head -1 || true)"
+  if [[ -n "${dur}" ]]; then
+    ss="$(awk -v d="${dur}" 'BEGIN { if (d > 0) printf "%.3f", d / 2; else print "300" }')"
+  fi
+  "${FFMPEG_BIN}" -y -hide_banner -loglevel error -ss "${ss}" -i "${input}" -frames:v 1 -q:v 2 "${out}/thumb.jpg" || true
+}
+
+generate_nsfw_cc() {
+  local input="${1}"
+  local out_vtt="${OUT_DIR}/nsfw.vtt"
+
+  if [[ "${WHISPER_CC:-1}" == "0" ]]; then
+    log "NSFW CC skipped (WHISPER_CC=0)"
+    return 0
+  fi
+
+  if [[ ! -f "${input}" ]]; then
+    log "NSFW CC skipped (missing input)"
+    return 0
+  fi
+
+  resolve_ffmpeg_bins
+  export FFMPEG_BIN FFPROBE_BIN
+  log "NSFW CC: transcribing speech (model=${WHISPER_MODEL:-small})..."
+  if python3 /app/generate_cc.py \
+    --input "${input}" \
+    --output "${out_vtt}" \
+    --model "${WHISPER_MODEL:-small}" \
+    --language "${WHISPER_LANGUAGE:-en}" \
+    --ffmpeg "${FFMPEG_BIN}" \
+    --device "${WHISPER_DEVICE:-auto}"; then
+    if [[ -f "${out_vtt}" ]]; then
+      export CC_SRC="/videos/${R2_PREFIX}/nsfw.vtt"
+      log "NSFW CC ready: ${out_vtt}"
+      return 0
+    fi
+  fi
+  log "NSFW CC: no captions generated (non-fatal)"
+  unset CC_SRC
+  return 0
 }
 
 s5cmd_base() {
@@ -569,6 +609,9 @@ upload_and_verify() {
   s5cmd "$(s5cmd_base)" sync "${OUT_DIR}/" "s3://${bucket}/${prefix}/"
 
   r2_exists "${prefix}/master.m3u8" || { echo "missing in r2: master.m3u8" >&2; exit 9; }
+  if [[ -f "${OUT_DIR}/nsfw.vtt" ]]; then
+    r2_exists "${prefix}/nsfw.vtt" || { echo "missing in r2: nsfw.vtt" >&2; exit 9; }
+  fi
 
   verify_variant_tail() {
     local variant="${1}"
@@ -597,8 +640,11 @@ create_pr() {
   req R2_PREFIX
 
   local hls_src="/videos/${R2_PREFIX}/master.m3u8"
-  local thumb_src="/videos/${R2_PREFIX}/thumb.jpg"
 
+  local cc_args=()
+  if [[ -n "${CC_SRC:-}" ]]; then
+    cc_args=(--cc-src "${CC_SRC}")
+  fi
   python3 /app/github_pr.py \
     --repo "${GITHUB_REPO}" \
     --token "${GITHUB_TOKEN}" \
@@ -607,11 +653,11 @@ create_pr() {
     --date "${DATE}" \
     --duration "${DURATION}" \
     --hls-src "${hls_src}" \
-    --thumb-src "${thumb_src}" \
     --pinned "true" \
     --tags "Stream" \
     --thumb-class "t2" \
-    --monogram "PM"
+    --monogram "PM" \
+    "${cc_args[@]}"
 }
 
 cleanup() {
@@ -625,6 +671,8 @@ finish_ingest() {
 
   log "thumbnail..."
   make_thumb "${input_file}" "${OUT_DIR}"
+
+  generate_nsfw_cc "${input_file}"
 
   log "upload+verify..."
   upload_and_verify

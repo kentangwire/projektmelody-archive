@@ -36,7 +36,7 @@ RUN curl -fsSL -o /tmp/s5cmd.tar.gz "https://github.com/peak/s5cmd/releases/down
   && rm -f /tmp/s5cmd.tar.gz \
   && chmod +x /usr/local/bin/s5cmd
 
-RUN python3 -m pip install --no-cache-dir requests
+RUN python3 -m pip install --no-cache-dir requests faster-whisper
 
 WORKDIR /app
 COPY entrypoint.sh /app/entrypoint.sh
@@ -44,13 +44,17 @@ COPY run-url.sh /app/run-url.sh
 COPY watch-progress.sh /app/watch-progress.sh
 COPY watch-upload.sh /app/watch-upload.sh
 COPY watch-upload.py /app/watch-upload.py
+COPY watch-upload-lite.py /app/watch-upload-lite.py
+COPY upload-with-progress.py /app/upload-with-progress.py
 COPY github_pr.py /app/github_pr.py
+COPY generate_cc.py /app/generate_cc.py
+COPY run-cc.sh /app/run-cc.sh
 COPY nvenc_fix.c /tmp/nvenc_fix.c
 
 RUN gcc -shared -fPIC -O2 -o /opt/libnvenc_fix.so /tmp/nvenc_fix.c -ldl \
   && rm /tmp/nvenc_fix.c
 
-RUN chmod +x /app/entrypoint.sh /app/run-url.sh /app/watch-progress.sh /app/watch-upload.sh /app/watch-upload.py
+RUN chmod +x /app/entrypoint.sh /app/run-url.sh /app/watch-progress.sh /app/watch-upload.sh /app/watch-upload.py /app/watch-upload-lite.py /app/upload-with-progress.py
 
 ENV MODE=run
 ENV WORK_DIR=/work

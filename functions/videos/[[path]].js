@@ -1,3 +1,5 @@
+import { r2Get, r2Head } from '../r2Resolve.js';
+
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const pathname = url.pathname || '';
@@ -14,12 +16,6 @@ export async function onRequestGet(context) {
   }
 
   const rangeHeader = context.request.headers.get('Range');
-  const bucket = context.env.R2_VIDEOS;
-
-  if (!bucket) {
-    return new Response('R2 binding missing', { status: 500 });
-  }
-
   const ext = key.toLowerCase().split('.').pop();
   const contentType =
     ext === 'mp4'
@@ -41,8 +37,9 @@ export async function onRequestGet(context) {
                   : 'application/octet-stream';
 
   if (!rangeHeader) {
-    const obj = await bucket.get(key);
-    if (!obj) return new Response('Not found', { status: 404 });
+    const hit = await r2Get(context.env, key);
+    if (!hit) return new Response('Not found', { status: 404 });
+    const { obj } = hit;
 
     const headers = new Headers();
     headers.set('Content-Type', contentType);
@@ -57,9 +54,9 @@ export async function onRequestGet(context) {
     return new Response(obj.body, { status: 200, headers });
   }
 
-  const sizeProbe = await bucket.head(key);
-  if (!sizeProbe) return new Response('Not found', { status: 404 });
-  const size = Number(sizeProbe.size);
+  const headHit = await r2Head(context.env, key);
+  if (!headHit) return new Response('Not found', { status: 404 });
+  const size = Number(headHit.obj.size);
 
   const parsed = parseRange(rangeHeader, size);
   if (!parsed) {
@@ -69,8 +66,9 @@ export async function onRequestGet(context) {
   }
 
   const { start, end } = parsed;
-  const obj = await bucket.get(key, { range: { offset: start, length: end - start + 1 } });
-  if (!obj) return new Response('Not found', { status: 404 });
+  const hit = await r2Get(context.env, key, { range: { offset: start, length: end - start + 1 } });
+  if (!hit) return new Response('Not found', { status: 404 });
+  const { obj } = hit;
 
   const headers = new Headers();
   headers.set('Content-Type', contentType);

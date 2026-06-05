@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local `npm run dev` (wrangler pages dev).
+# DATABASE_URL enables comments, timestamps, and tags APIs locally.
+DATABASE_URL=postgresql://USER:PASSWORD@HOST/DB?sslmode=require

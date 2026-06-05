@@ -2,8 +2,75 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>
+  (function () {
+    if (location.hostname === 'www.projektmelody.cc') {
+      location.replace('https://projektmelody.cc' + location.pathname + location.search + location.hash);
+    }
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>pROJEKT mELODY — Archive</title>
+<meta name="description" content="Free Projekt Melody VOD archive — watch and search every archived Twitch stream, karaoke, gaming, and VTuber VOD. Faster player, tags, resume playback, and timestamps.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#060910">
+<meta name="rating" content="adult">
+<title>Projekt Melody VOD Archive — Twitch Streams &amp; Highlights</title>
+<link rel="canonical" href="https://projektmelody.cc/">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<link rel="icon" type="image/png" href="/assets/og-image.png">
+<link rel="apple-touch-icon" href="/assets/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="pROJEKT mELODY Archive">
+<meta property="og:title" content="Projekt Melody VOD Archive — Twitch Streams &amp; Highlights">
+<meta property="og:description" content="Watch and search archived Projekt Melody Twitch VODs. Community archive with resume playback, tags, and timestamps.">
+<meta property="og:url" content="https://projektmelody.cc/">
+<meta property="og:image" content="https://projektmelody.cc/assets/og-image.png">
+<meta property="og:image:alt" content="pROJEKT mELODY stream archive">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Projekt Melody VOD Archive — Twitch Streams &amp; Highlights">
+<meta name="twitter:description" content="Watch and search archived Projekt Melody Twitch VODs. Community archive with resume playback, tags, and timestamps.">
+<meta name="twitter:image" content="https://projektmelody.cc/assets/og-image.png">
+<script type="application/ld+json" id="pmSeoSiteJson">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "pROJEKT mELODY Archive",
+  "alternateName": ["Projekt Melody VOD Archive", "Projekt Melody Twitch Archive"],
+  "url": "https://projektmelody.cc/",
+  "description": "Community-maintained archive of Projekt Melody Twitch VODs with search, tags, resume playback, and timestamps.",
+  "inLanguage": "en",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://projektmelody.cc/?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Projekt Melody VOD Archive",
+  "url": "https://projektmelody.cc/",
+  "description": "Searchable library of archived Projekt Melody Twitch streams and highlights.",
+  "isPartOf": { "@type": "WebSite", "url": "https://projektmelody.cc/" },
+  "about": {
+    "@type": "Person",
+    "name": "Projekt Melody",
+    "sameAs": [
+      "https://www.twitch.tv/projektmelody",
+      "https://www.youtube.com/c/ProjektMelody",
+      "https://twitter.com/ProjektMelody",
+      "https://www.patreon.com/c/FRDS_Melody",
+      "https://ko-fi.com/iznos"
+    ]
+  }
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -27,9 +94,23 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.seo-catalog {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.seo-catalog a { display: inline; }
 html {
   scroll-behavior: smooth;
-  overflow-x: clip;
+  overflow-x: hidden;
   max-width: 100%;
 }
 
@@ -41,7 +122,7 @@ body {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 400;
   min-height: 100vh;
-  overflow-x: clip;
+  overflow-x: hidden;
   max-width: 100%;
 }
 
@@ -73,7 +154,7 @@ header {
   gap: 0.15rem;
   position: relative;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 header::after {
@@ -116,6 +197,57 @@ header::after {
 .logo-brand .logo-text { font-size: 1.05rem; }
 
 .logo-brand .logo-sub { font-size: 0.5rem; }
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  min-height: 2.2rem;
+}
+
+.header-online {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  background: rgba(4, 6, 15, 0.72);
+  white-space: nowrap;
+}
+
+.header-online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3cff9a;
+  box-shadow: 0 0 8px rgba(60, 255, 154, 0.65);
+  flex-shrink: 0;
+  animation: onlinePulse 2s ease-in-out infinite;
+}
+
+@keyframes onlinePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.72; transform: scale(0.9); }
+}
+
+.header-online-count {
+  color: var(--cyan);
+  font-weight: 700;
+  min-width: 0.6rem;
+  text-align: center;
+}
 
 .header-toolbar {
   display: flex;
@@ -242,6 +374,14 @@ nav a.active::after {
 .header-toolbar .nav-toggle {
   flex-shrink: 0;
 }
+.header-support {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
 #kofiHeader,
 .header-kofi {
   display: flex;
@@ -249,13 +389,67 @@ nav a.active::after {
   justify-content: center;
   min-height: 34px;
   overflow: hidden;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
   padding: 0 0.2rem;
   border: 1px solid rgba(40,212,236,0.2);
   border-radius: var(--radius-sm);
   background: rgba(40,212,236,0.05);
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-  max-width: min(148px, 42vw);
+  max-width: min(148px, 36vw);
+}
+
+.header-patreon,
+.patreon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 34px;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid rgba(255,66,77,0.35);
+  border-radius: var(--radius-sm);
+  background: rgba(255,66,77,0.08);
+  color: #ffb4ba;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+.header-patreon:hover,
+.patreon-btn:hover {
+  border-color: rgba(255,66,77,0.55);
+  background: rgba(255,66,77,0.14);
+  color: #ffd0d4;
+  box-shadow: 0 0 12px rgba(255,66,77,0.15);
+}
+
+.patreon-btn svg,
+.header-patreon svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+.patreon-btn--lg {
+  min-height: 42px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+}
+
+.patreon-btn--lg svg { width: 16px; height: 16px; }
+
+#patreonFooter {
+  display: inline-flex;
+  align-items: center;
+  text-transform: none;
 }
 
 .header-kofi:hover,
@@ -562,7 +756,7 @@ nav a.active::after {
   position: relative;
   z-index: 1;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 .section-head {
@@ -635,12 +829,19 @@ nav a.active::after {
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  transition: box-shadow 0.25s ease;
+}
+
+.featured-video:hover,
+.featured-video.previewing {
+  box-shadow: inset 0 0 0 2px rgba(40, 212, 236, 0.55), 0 0 22px rgba(40, 212, 236, 0.14);
 }
 
 .fv-bg {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, #060d1f 0%, #0f1b3d 30%, #1a0a3d 60%, #0a1830 100%);
+  transition: opacity 0.25s ease;
 }
 
 .fv-grid {
@@ -684,10 +885,15 @@ nav a.active::after {
   align-items: center;
   justify-content: center;
   z-index: 5;
-  transition: background 0.3s;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
 }
 
-.featured-video:hover .fv-play-btn { background: rgba(0,0,0,0.2); }
+.featured-video:hover .fv-play-btn,
+.featured-video.previewing .fv-play-btn,
+.featured-video.preview-loading .fv-play-btn {
+  opacity: 0;
+}
 
 .fv-play-ring {
   width: 80px;
@@ -704,8 +910,8 @@ nav a.active::after {
 }
 
 .featured-video:hover .fv-play-ring {
-  transform: scale(1.12);
-  background: rgba(40,212,236,0.15);
+  transform: none;
+  background: rgba(40,212,236,0.08);
 }
 
 .fv-play-ring::before {
@@ -834,7 +1040,15 @@ nav a.active::after {
   align-items: center;
 }
 
-.sidebar-item:hover { background: var(--panel2); }
+.sidebar-item:hover {
+  background: var(--panel2);
+  box-shadow: inset 2px 0 0 var(--cyan);
+}
+
+.sidebar-item:has(.si-thumb.previewing) {
+  background: var(--panel2);
+  box-shadow: inset 2px 0 0 var(--cyan);
+}
 
 .si-thumb {
   width: 80px;
@@ -842,12 +1056,70 @@ nav a.active::after {
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
+  transition: box-shadow 0.25s ease;
+}
+
+.sidebar-item:hover .si-thumb,
+.si-thumb.previewing {
+  box-shadow: inset 0 0 0 1px rgba(40, 212, 236, 0.4);
 }
 
 .si-bg {
   width: 100%;
   height: 100%;
   border: 1px solid var(--border2);
+  transition: opacity 0.25s ease;
+}
+
+.si-thumb.previewing .si-bg { opacity: 0; }
+
+.si-thumb .vc-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.2s ease;
+  background: #04060f;
+}
+
+.si-thumb.previewing .vc-preview { opacity: 1; }
+
+.si-thumb.preview-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 6, 15, 0.35);
+  z-index: 2;
+}
+
+.featured-video .vc-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.2s ease;
+  background: #04060f;
+}
+
+.featured-video.previewing .vc-preview { opacity: 1; }
+
+.featured-video.previewing .fv-bg { opacity: 0; }
+
+.featured-video.preview-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 6, 15, 0.25);
+  z-index: 4;
+  pointer-events: none;
 }
 
 .si-info { flex: 1; min-width: 0; }
@@ -915,7 +1187,7 @@ nav a.active::after {
 /* ===================== VIDEO GRID ===================== */
 .vgrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
   background: var(--border);
 }
@@ -923,12 +1195,20 @@ nav a.active::after {
 .vcard {
   background: var(--panel);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.25s ease;
   position: relative;
   overflow: hidden;
 }
 
-.vcard:hover { background: var(--panel2); }
+.vcard:hover {
+  background: var(--panel2);
+  box-shadow: inset 0 0 0 1px rgba(40, 212, 236, 0.45), 0 0 16px rgba(40, 212, 236, 0.1);
+}
+
+.vcard:has(.vc-thumb.previewing) {
+  background: var(--panel2);
+  box-shadow: inset 0 0 0 1px rgba(40, 212, 236, 0.45), 0 0 16px rgba(40, 212, 236, 0.1);
+}
 
 /* Glitch hover line */
 .vcard::before {
@@ -949,15 +1229,53 @@ nav a.active::after {
   aspect-ratio: 16/9;
   position: relative;
   overflow: hidden;
+  transition: box-shadow 0.25s ease;
+}
+
+.vcard:hover .vc-thumb,
+.vc-thumb.previewing {
+  box-shadow: inset 0 0 0 1px rgba(40, 212, 236, 0.35);
 }
 
 .vc-bg {
   width: 100%;
   height: 100%;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, opacity 0.25s ease;
 }
 
-.vcard:hover .vc-bg { transform: scale(1.06); }
+.vc-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.2s ease;
+  background: #04060f;
+}
+
+.vc-thumb.previewing .vc-preview { opacity: 1; }
+
+.vc-thumb.previewing .vc-bg {
+  opacity: 0;
+  transform: none;
+}
+
+.vc-thumb.preview-loading .vc-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 6, 15, 0.35);
+  z-index: 3;
+}
+
+.vcard:hover .vc-bg,
+.vcard:has(.vc-thumb.previewing) .vc-bg { transform: none; }
+
+.vc-thumb.previewing .vc-bg,
+.vcard:hover .vc-thumb.previewing .vc-bg { transform: none; }
 
 .vc-overlay {
   position: absolute;
@@ -968,9 +1286,8 @@ nav a.active::after {
   justify-content: center;
   transition: background 0.3s;
   z-index: 2;
+  pointer-events: none;
 }
-
-.vcard:hover .vc-overlay { background: rgba(4,6,15,0.5); }
 
 .vc-play {
   width: 44px;
@@ -985,9 +1302,8 @@ nav a.active::after {
   transform: translateY(6px);
   transition: opacity 0.3s, transform 0.3s;
   box-shadow: var(--glow-cyan);
+  pointer-events: none;
 }
-
-.vcard:hover .vc-play { opacity: 1; transform: translateY(0); }
 
 .vc-play-tri {
   width: 0; height: 0;
@@ -1279,6 +1595,192 @@ body.vp-player-fs .modal {
 }
 
 #spinner.active { opacity: 1; }
+
+#vpPlayGate {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: rgba(3, 1, 10, 0.45) center/cover no-repeat;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#vpPlayGate.show { display: flex; }
+
+#vpPlayGate.loading { pointer-events: none; }
+
+#vpPlayGate .vp-play-gate-icon {
+  width: 72px;
+  height: 72px;
+  border: 2px solid var(--cyan);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(40, 212, 236, 0.14);
+  box-shadow: 0 0 24px rgba(40, 212, 236, 0.35);
+}
+
+#vpPlayGate .vp-play-gate-icon svg {
+  width: 30px;
+  height: 30px;
+  fill: var(--cyan);
+}
+
+#vpPlayGate .vp-play-gate-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+#vpPlayGate.loading .vp-play-gate-icon {
+  animation: spin 0.7s linear infinite;
+  border-top-color: var(--pink);
+}
+
+.vp-resume-prompt {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 1.25rem;
+  background: rgba(3, 1, 10, 0.72);
+  text-align: center;
+}
+
+.vp-resume-prompt.show { display: flex; }
+
+.vp-resume-prompt-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  max-width: 22rem;
+}
+
+.vp-resume-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.vp-resume-btn {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.1rem;
+  min-height: 44px;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.vp-resume-btn--primary {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(40, 212, 236, 0.12);
+}
+
+.vp-upnext {
+  position: absolute;
+  right: 12px;
+  bottom: 72px;
+  z-index: 14;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  width: min(280px, calc(100% - 24px));
+  padding: 12px 14px;
+  border: 1px solid rgba(40, 212, 236, 0.35);
+  border-radius: var(--radius-sm);
+  background: rgba(3, 1, 10, 0.88);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+.vp-upnext.show { display: flex; }
+
+.vp-upnext-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.vp-upnext-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.vp-upnext-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.vp-upnext-cancel,
+.vp-upnext-now {
+  flex: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  min-height: 36px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.vp-upnext-cancel {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.vp-upnext-now {
+  border: 1px solid var(--cyan);
+  background: rgba(40, 212, 236, 0.14);
+  color: var(--cyan);
+}
+
+html.pm-touch-player .vp-upnext {
+  right: 8px;
+  left: 8px;
+  bottom: 64px;
+  width: auto;
+}
 
 .spin-ring {
   width: 38px;
@@ -2437,7 +2939,7 @@ footer {
   margin-top: 4rem;
   border-top: 1px solid var(--border2);
   position: relative;
-  overflow-x: clip;
+  overflow-x: hidden;
   max-width: 100%;
 }
 
@@ -2492,6 +2994,155 @@ footer::before {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 900;
   letter-spacing: -0.05em;
+}
+
+/* ===================== TRAFFICSTARS ===================== */
+.ts-strip {
+  display: none;
+  justify-content: center;
+  padding: 0.65rem 1rem;
+  background: rgba(3, 1, 10, 0.92);
+  border-top: 1px solid rgba(40, 212, 236, 0.12);
+  border-bottom: 1px solid rgba(40, 212, 236, 0.12);
+}
+
+.ts-strip.show { display: flex; }
+
+.ts-strip-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.ts-strip--header { margin-top: -0.15rem; }
+
+.ts-strip--footer {
+  border-top: 1px solid rgba(40, 212, 236, 0.18);
+  border-bottom: none;
+}
+
+.ts-strip--modal {
+  margin: 0.75rem 0 0;
+  padding: 0.5rem;
+  border: 1px solid rgba(40, 212, 236, 0.15);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.ts-strip-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.ts-ins { display: block; max-width: 100%; }
+
+.ts-preroll {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: none;
+  background: rgba(3, 1, 10, 0.45);
+  padding: 0.75rem;
+}
+
+.ts-preroll.show { display: block; }
+
+.ts-preroll.ts-ad-loaded {
+  background: rgba(3, 1, 10, 0.82);
+}
+
+.ts-preroll-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.ts-banner-frame,
+.ts-strip-inner iframe {
+  display: block;
+  max-width: 100%;
+  border: 0;
+}
+
+.ts-preroll-inner .ts-banner-frame,
+.ts-preroll-inner iframe {
+  display: block;
+  width: 300px;
+  height: 250px;
+  max-width: calc(100% - 1rem);
+  max-height: calc(100% - 4rem);
+  border: 0;
+}
+
+.ts-preroll-placeholder {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+
+.ts-preroll.ts-ad-loaded .ts-preroll-placeholder {
+  display: none;
+}
+
+.ts-skip-btn {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 13;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.15rem;
+  min-height: 44px;
+  min-width: 120px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.72);
+  color: rgba(255, 255, 255, 0.55);
+  cursor: not-allowed;
+  touch-action: manipulation;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.ts-skip-btn:not(:disabled) {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  cursor: pointer;
+  box-shadow: 0 0 16px rgba(40, 212, 236, 0.35), 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.ts-skip-btn:not(:disabled):hover {
+  background: rgba(40, 212, 236, 0.14);
+}
+
+html.pm-touch-player .ts-skip-btn {
+  right: 10px;
+  bottom: 10px;
+  font-size: 0.88rem;
+  padding: 0.7rem 1.25rem;
+  min-width: 132px;
 }
 
 /* ===================== LOAD MORE ===================== */
@@ -3880,6 +4531,102 @@ footer::before {
 
 .about-channel:hover .about-channel-handle { color: rgba(40,212,236,0.75); }
 
+.about-channel--patreon {
+  border-color: rgba(255,66,77,0.28);
+  background: rgba(255,66,77,0.05);
+}
+
+.about-channel--patreon:hover {
+  border-color: rgba(255,66,77,0.5);
+  background: rgba(255,66,77,0.1);
+  color: #ffb4ba;
+}
+
+.about-channel--patreon .about-channel-handle { color: rgba(255,180,186,0.65); }
+
+.about-support-panel {
+  margin-top: 1.75rem;
+  padding: 1.35rem 1.45rem;
+  border: 1px solid rgba(255,66,77,0.22);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(255,66,77,0.06) 0%, rgba(8,12,28,0.9) 55%);
+}
+
+.about-support-head h3 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffb4ba;
+  margin: 0 0 0.55rem;
+}
+
+.about-support-head p {
+  margin: 0;
+  color: var(--dim);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  max-width: 52rem;
+}
+
+.about-support-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin: 1.1rem 0 1.25rem;
+}
+
+.about-support-note {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+  color: rgba(0, 255, 231, 0.45);
+  letter-spacing: 0.04em;
+}
+
+.about-tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 0.55rem;
+}
+
+.about-tier-single {
+  max-width: 28rem;
+}
+
+.about-tier {
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  background: rgba(4,6,15,0.55);
+}
+
+.about-tier-price {
+  display: block;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.72rem;
+  color: var(--cyan);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.25rem;
+}
+
+.about-tier-name {
+  display: block;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+
+.about-tier-desc {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--dim);
+}
+
 .about-steps {
   list-style: none;
   margin: 0;
@@ -4012,7 +4759,11 @@ footer::before {
   }
 
   .h-stat:nth-child(2n) { border-right: none; }
-  .h-stat:nth-child(n + 3) { border-bottom: none; }
+  .h-stat:nth-child(n + 5) { border-bottom: none; }
+  .h-stat:nth-child(5) {
+    grid-column: 1 / -1;
+    border-right: none;
+  }
 
   .h-stat-num { font-size: clamp(1.1rem, 5vw, 1.45rem); }
 
@@ -4107,11 +4858,25 @@ footer::before {
     gap: 0.55rem;
   }
   .logo-brand {
-    width: 100%;
+    width: auto;
+    flex: 1;
+    min-width: 0;
     justify-content: center;
     flex-direction: row;
     padding: 0.2rem 0 0.35rem;
     gap: 0.65rem;
+  }
+  .header-top {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.4rem;
+  }
+  .header-online {
+    position: static;
+    transform: none;
+    flex-shrink: 0;
+    margin-left: 0;
   }
   .logo-brand .logo-text {
     font-size: 0.92rem;
@@ -4145,11 +4910,19 @@ footer::before {
     font-size: 0.58rem;
     letter-spacing: 0.12em;
   }
-  .header-toolbar #kofiHeader,
-  .header-toolbar .header-kofi {
+  .header-toolbar .header-support {
     grid-column: 2;
     grid-row: 1;
     width: 100%;
+    max-width: none;
+    min-height: 42px;
+    align-self: stretch;
+    gap: 0.4rem;
+  }
+  .header-toolbar #kofiHeader,
+  .header-toolbar .header-kofi {
+    flex: 1;
+    width: auto;
     max-width: none;
     min-height: 42px;
     padding: 0;
@@ -4164,6 +4937,12 @@ footer::before {
     border: none;
     background: transparent;
     box-shadow: none;
+  }
+  .header-toolbar .header-patreon {
+    flex: 1;
+    min-height: 42px;
+    font-size: 0.54rem;
+    padding: 0 0.45rem;
   }
   .header-toolbar #kofiHeader .btn-container {
     transform: none !important;
@@ -4273,7 +5052,11 @@ footer::before {
     border-bottom: 1px solid var(--border2);
   }
   .h-stat:nth-child(2n) { border-right: none; }
-  .h-stat:nth-child(n + 3) { border-bottom: none; }
+  .h-stat:nth-child(n + 5) { border-bottom: none; }
+  .h-stat:nth-child(5) {
+    grid-column: 1 / -1;
+    border-right: none;
+  }
   .footer-inner {
     flex-wrap: wrap;
     justify-content: center;
@@ -4282,7 +5065,7 @@ footer::before {
     text-align: center;
   }
   .section { padding: 2.4rem 1.2rem; }
-  .vgrid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+  .vgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 720px) {
@@ -4307,6 +5090,12 @@ footer::before {
   header { padding: 0.55rem 0.85rem 0.65rem; }
   .logo-brand .logo-icon { width: 26px; height: 26px; }
   .logo-brand .logo-text { font-size: 0.82rem; }
+  .header-online {
+    padding: 0.22rem 0.45rem;
+    font-size: 0.52rem;
+    right: 0;
+  }
+  .header-online-label { display: none; }
   .header-toolbar {
     grid-template-columns: minmax(4.4rem, auto) minmax(0, 1fr) minmax(4.4rem, auto);
     gap: 0.4rem;
@@ -4316,9 +5105,15 @@ footer::before {
     min-height: 38px;
     font-size: 0.54rem;
   }
+  .header-toolbar .header-support { min-height: 38px; }
   .header-toolbar #kofiHeader,
   .header-toolbar .header-kofi {
     min-height: 38px;
+  }
+  .header-toolbar .header-patreon {
+    min-height: 38px;
+    font-size: 0.5rem;
+    padding: 0 0.3rem;
   }
   .header-toolbar #kofiHeader .btn-container,
   .header-toolbar #kofiHeader .btn-container a {
@@ -4614,7 +5409,7 @@ footer::before {
   .btn-row { flex-wrap: wrap; justify-content: flex-start; row-gap: 2px; }
   #controls { padding: 24px 6px calc(6px + env(safe-area-inset-bottom)); }
 
-  .vgrid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .vgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (hover: none) and (pointer: coarse) and (max-width: 900px) and (max-height: 500px) {
@@ -4964,15 +5759,22 @@ html:not(.age-verified) body {
 
 <!-- HEADER -->
 <header id="siteHeader">
-  <a class="logo logo-brand" href="#home" id="logoHome">
-    <div class="logo-icon">
-      <svg viewBox="0 0 20 20"><polygon points="10,2 18,7 18,13 10,18 2,13 2,7"/></svg>
+  <div class="header-top">
+    <a class="logo logo-brand" href="#home" id="logoHome">
+      <div class="logo-icon">
+        <svg viewBox="0 0 20 20"><polygon points="10,2 18,7 18,13 10,18 2,13 2,7"/></svg>
+      </div>
+      <div>
+        <span class="logo-text">pROJEKT mELODY</span>
+        <span class="logo-sub">Archive</span>
+      </div>
+    </a>
+    <div class="header-online" id="headerOnline" hidden aria-live="polite" aria-label="Users currently online">
+      <span class="header-online-dot" aria-hidden="true"></span>
+      <span class="header-online-count" id="headerOnlineCount">0</span>
+      <span class="header-online-label">online</span>
     </div>
-    <div>
-      <span class="logo-text">pROJEKT mELODY</span>
-      <span class="logo-sub">Archive</span>
-    </div>
-  </a>
+  </div>
   <div class="header-toolbar">
     <nav id="mainNav" aria-label="Primary">
       <a href="#home" data-nav="home" class="active"><span class="nav-short">HOME</span><span class="nav-full">All VODs / Home</span></a>
@@ -4984,11 +5786,23 @@ html:not(.age-verified) body {
     <div class="search-wrap header-search">
       <input class="search-input" id="searchInput" type="text" placeholder="Search archives...">
     </div>
-    <div id="kofiHeader" class="header-kofi" aria-label="Support on Ko-fi"></div>
+    <div class="header-support">
+      <div id="kofiHeader" class="header-kofi" aria-label="Support on Ko-fi"></div>
+      <a id="patreonHeader" class="header-patreon" href="https://www.patreon.com/c/FRDS_Melody" target="_blank" rel="noopener noreferrer" aria-label="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 0C10.194 0 6 4.194 6 9.386c0 5.192 4.194 9.386 9.386 9.386 5.192 0 9.386-4.194 9.386-9.386C24.772 4.194 20.578 0 15.386 0z"/></svg>
+        <span class="patreon-label">Patreon</span>
+      </a>
+    </div>
     <button class="btn-primary header-login" type="button">LOGIN</button>
     <button class="btn-primary nav-toggle" id="navToggle" type="button" aria-controls="mainNav" aria-expanded="false">MENU</button>
   </div>
 </header>
+
+<nav id="seoCatalog" class="seo-catalog" aria-label="Video archive index"></nav>
+
+<div class="ts-strip ts-strip--header" id="tsHeaderStrip" hidden aria-label="Advertisement">
+  <div class="ts-strip-inner" id="tsHeaderSlot"></div>
+</div>
 
 <!-- HERO -->
 <section class="hero pm-sec" id="home" data-show="home">
@@ -5024,7 +5838,7 @@ html:not(.age-verified) body {
       <span class="line1">pROJEKT mELODY</span>
       <span class="line2">ARCHIVE</span>
     </h1>
-    <p class="hero-desc">Browse archived streams, search by title/tags/date, and play with quality selection.</p>
+    <p class="hero-desc">Search and replay every Projekt Melody Twitch VOD in one free archive — resume playback, community tags, timestamps, and adaptive quality. Updated as new streams are added.</p>
     <div class="hero-cta">
       <button class="btn-primary" id="playLatestBtn">PLAY LATEST</button>
       <a class="hero-cta-link" href="#recent">Jump to list</a>
@@ -5043,8 +5857,12 @@ html:not(.age-verified) body {
         <span class="h-stat-label">Since</span>
       </div>
       <div class="h-stat">
-        <span class="h-stat-num" id="heroVodNum">—</span>
-        <span class="h-stat-label">Views</span>
+        <span class="h-stat-num" id="heroVisitorsTodayNum">—</span>
+        <span class="h-stat-label">Visitors today</span>
+      </div>
+      <div class="h-stat">
+        <span class="h-stat-num" id="heroTotalViewsNum">—</span>
+        <span class="h-stat-label">Total views</span>
       </div>
     </div>
   </div>
@@ -5100,7 +5918,7 @@ html:not(.age-verified) body {
   <div class="vgrid" id="grid"></div>
 
   <div class="load-more-wrap">
-    <button class="btn-load" id="loadMoreBtn">LOAD MORE ARCHIVES ↓</button>
+    <button class="btn-load" id="loadMoreBtn" type="button" hidden>LOAD MORE ARCHIVES ↓</button>
   </div>
 </section>
 
@@ -5173,9 +5991,13 @@ html:not(.age-verified) body {
           <span class="about-channel-name">X / Twitter</span>
           <span class="about-channel-handle">@ProjektMelody</span>
         </a>
+        <a class="about-channel about-channel--patreon" href="https://www.patreon.com/c/FRDS_Melody" target="_blank" rel="noopener noreferrer">
+          <span class="about-channel-name">Patreon</span>
+          <span class="about-channel-handle">Monthly support</span>
+        </a>
         <a class="about-channel" href="https://ko-fi.com/iznos" target="_blank" rel="noopener noreferrer">
           <span class="about-channel-name">Ko-fi</span>
-          <span class="about-channel-handle">Support archive</span>
+          <span class="about-channel-handle">One-time tip</span>
         </a>
       </div>
     </div>
@@ -5189,6 +6011,31 @@ html:not(.age-verified) body {
         <li><strong>Highlights</strong><span><a href="#clips" class="about-inline-link" data-nav="clips">Clips section</a> · under 15 min</span></li>
         <li><strong>Categories</strong><span><a href="#categories" class="about-inline-link" data-nav="categories">Browse by tag</a></span></li>
       </ul>
+    </div>
+  </div>
+
+  <div class="about-support-panel" id="aboutSupport">
+    <div class="about-support-head">
+      <h3>Support the archive</h3>
+      <p>
+        projektmelody.cc is a community project — storage, transcoding, and bandwidth are paid out of pocket.
+        $2/month helps offset costs and keeps you in the loop when new VODs land.
+      </p>
+    </div>
+    <div class="about-support-cta">
+      <a class="patreon-btn patreon-btn--lg" id="aboutPatreonBtn" href="https://www.patreon.com/c/FRDS_Melody" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 0C10.194 0 6 4.194 6 9.386c0 5.192 4.194 9.386 9.386 9.386 5.192 0 9.386-4.194 9.386-9.386C24.772 4.194 20.578 0 15.386 0z"/></svg>
+        <span>Become a Patron</span>
+      </a>
+      <a class="about-inline-link" href="https://ko-fi.com/iznos" target="_blank" rel="noopener noreferrer">Prefer a one-time tip? Ko-fi →</a>
+      <span class="about-support-note">Not affiliated with Projekt Melody or VShojo — funds the archive only.</span>
+    </div>
+    <div class="about-tier-single" aria-label="Membership">
+      <div class="about-tier">
+        <span class="about-tier-price">$2 / mo</span>
+        <span class="about-tier-name">Archive Supporter</span>
+        <p class="about-tier-desc">Stay in the loop on new uploads and player updates. Helps offset storage and bandwidth so the archive stays free for everyone.</p>
+      </div>
     </div>
   </div>
 
@@ -5207,11 +6054,19 @@ html:not(.age-verified) body {
 </section>
 
 <!-- FOOTER -->
+<div class="ts-strip ts-strip--footer" id="tsFooterStrip" hidden aria-label="Advertisement">
+  <div class="ts-strip-inner" id="tsFooterSlot"></div>
+</div>
 <footer>
   <div class="footer-inner">
     <span class="footer-brand">pROJEKT mELODY</span>
+    <a href="/vods">VOD index</a>
     <span>Community archive project</span>
     <span id="kofiFooter"></span>
+    <a id="patreonFooter" class="header-patreon" href="https://www.patreon.com/c/FRDS_Melody" target="_blank" rel="noopener noreferrer" aria-label="Support on Patreon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 0C10.194 0 6 4.194 6 9.386c0 5.192 4.194 9.386 9.386 9.386 5.192 0 9.386-4.194 9.386-9.386C24.772 4.194 20.578 0 15.386 0z"/></svg>
+      <span class="patreon-label">Patreon</span>
+    </a>
     <span>© 2026</span>
   </div>
 </footer>
@@ -5223,6 +6078,30 @@ html:not(.age-verified) body {
       <button class="pm-close-x" id="pmMobileCloseBtn" type="button">✕</button>
       <div class="player-wrap" id="playerWrap">
         <video class="player-video" id="video" playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5" preload="metadata" crossorigin="anonymous"></video>
+
+        <button type="button" class="vp-play-gate" id="vpPlayGate" hidden aria-label="Tap to play">
+          <span class="vp-play-gate-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </span>
+          <span class="vp-play-gate-label" id="vpPlayGateLabel">Tap to play</span>
+        </button>
+
+        <div class="vp-resume-prompt" id="vpResumePrompt" hidden aria-live="polite">
+          <p class="vp-resume-prompt-text" id="vpResumePromptText">You were at 0:00</p>
+          <div class="vp-resume-prompt-actions">
+            <button type="button" class="vp-resume-btn vp-resume-btn--primary" id="vpResumeContinue">Continue</button>
+            <button type="button" class="vp-resume-btn" id="vpResumeStart">Start over</button>
+          </div>
+        </div>
+
+        <div class="vp-upnext" id="vpUpNext" hidden aria-live="polite">
+          <div class="vp-upnext-label" id="vpUpNextLabel">Up next in 8s</div>
+          <div class="vp-upnext-title" id="vpUpNextTitle"></div>
+          <div class="vp-upnext-actions">
+            <button type="button" class="vp-upnext-cancel" id="vpUpNextCancel">Cancel</button>
+            <button type="button" class="vp-upnext-now" id="vpUpNextNow">Play now</button>
+          </div>
+        </div>
 
         <div class="vp-cc-gen" id="vpCcGen" hidden>
           <div class="vp-cc-gen-title">Voice → NSFW CC</div>
@@ -5243,6 +6122,12 @@ html:not(.age-verified) body {
         </div>
 
         <div class="spinner" id="spinner"><div class="spin-ring"></div></div>
+
+        <div class="ts-preroll" id="tsPrerollWrap" hidden aria-label="Advertisement">
+          <div class="ts-preroll-inner" id="tsPrerollSlot"></div>
+          <span class="ts-preroll-placeholder" id="tsPrerollPlaceholder">Loading ad…</span>
+          <button type="button" class="ts-skip-btn" id="skipAdBtn" disabled>Skip in 5s</button>
+        </div>
 
         <div class="error-toast" id="errorToast">
           <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
@@ -5322,6 +6207,10 @@ html:not(.age-verified) body {
           <div class="s-row">
             <span class="s-label">AUTOPLAY</span>
             <input type="checkbox" id="autoplayChk" checked>
+          </div>
+          <div class="s-row">
+            <span class="s-label">AUTO NEXT</span>
+            <input type="checkbox" id="autoplayNextChk" checked>
           </div>
           <div class="s-row">
             <span class="s-label">NSFW CC</span>
@@ -5419,6 +6308,11 @@ html:not(.age-verified) body {
       <div class="vpd-title" id="vpdTitle">Loading...</div>
       <div class="vpd-meta" id="vpdMeta">--</div>
 
+      <div class="ts-strip ts-strip--modal" id="tsModalStrip" hidden aria-label="Advertisement">
+        <div class="ts-strip-label">Sponsored</div>
+        <div class="ts-strip-inner" id="tsModalSlot"></div>
+      </div>
+
       <div class="vpd-action-bar">
         <button type="button" class="vpd-abtn" id="vpdLikeBtn" aria-label="Like">
           <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -5504,14 +6398,45 @@ html:not(.age-verified) body {
     });
   }
 
-  const PAGE_SIZE = 9;
-  const GRID_SHOW_ALL_MAX = 24;
-  let visibleCount = PAGE_SIZE;
+  function pmCatalogFetchUrl() {
+    return '/api/catalog?_=' + Date.now();
+  }
+
+  function pmUuid() {
+    try {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+      }
+    } catch {}
+    return 'pm-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+  }
+
+  async function reloadCatalogFromNetwork() {
+    try {
+      const res = await fetch(pmCatalogFetchUrl(), { cache: 'no-store' });
+      if (!res.ok) return false;
+      const text = await res.text();
+      if (text === pmCatalogSig) return false;
+      pmCatalogSig = text;
+      const data = JSON.parse(text);
+      if (!Array.isArray(data)) return false;
+      videos = pmSanitizeCatalogVideos(data);
+      buildVodIndex();
+      syncGridVisibleCount();
+      updateHeroStats();
+      renderAll();
+      pmSeoRenderCatalogLinks();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  let visibleCount = 0;
 
   function syncGridVisibleCount(list) {
     const n = Array.isArray(list) ? list.length : filteredVideos().length;
-    if (n <= GRID_SHOW_ALL_MAX) visibleCount = n;
-    else if (visibleCount < PAGE_SIZE) visibleCount = PAGE_SIZE;
+    visibleCount = n;
   }
   let activeFilter = 'ALL';
   let query = '';
@@ -5531,6 +6456,175 @@ html:not(.age-verified) body {
     clips: { title: 'Highlights & Clips', lead: 'Short-form clips and highlights (under 15 minutes or tagged as clips).' }
   };
 
+  const PM_SEO_ORIGIN = 'https://projektmelody.cc';
+  const PM_SEO_DEFAULT = {
+    title: 'Projekt Melody VOD Archive — Twitch Streams & Highlights',
+    description:
+      'Watch and search archived Projekt Melody Twitch VODs. Free community archive with karaoke, gaming streams, VTuber content, resume playback, tags, and timestamps.'
+  };
+  const PM_SEO_SECTION = {
+    home: {
+      title: 'Projekt Melody VOD Archive — All Twitch Streams',
+      description:
+        'Browse the full Projekt Melody VOD archive. Search archived Twitch streams by title, date, and community tags.'
+    },
+    recent: {
+      title: 'Recent Projekt Melody Streams — Latest VODs',
+      description: 'Latest Projekt Melody Twitch uploads and recent archived streams from the past six months.'
+    },
+    categories: {
+      title: 'Projekt Melody Streams by Category',
+      description: 'Filter Projekt Melody archived streams by tag, game, karaoke, events, and other categories.'
+    },
+    clips: {
+      title: 'Projekt Melody Clips & Highlights',
+      description: 'Short Projekt Melody clips and stream highlights under 15 minutes from the community archive.'
+    },
+    about: {
+      title: 'About the Projekt Melody Archive',
+      description:
+        'Community-maintained Projekt Melody VOD library with resume playback, tags, timestamps, and links to live channels.'
+    }
+  };
+
+  function pmSeoSetMeta(key, value, attr = 'name') {
+    if (!key || value == null) return;
+    let el = document.querySelector(`meta[${attr}="${key}"]`);
+    if (!el) {
+      el = document.createElement('meta');
+      el.setAttribute(attr, key);
+      document.head.appendChild(el);
+    }
+    el.setAttribute('content', String(value));
+  }
+
+  function pmSeoCanonical(href) {
+    let el = document.querySelector('link[rel="canonical"]');
+    if (!el) {
+      el = document.createElement('link');
+      el.rel = 'canonical';
+      document.head.appendChild(el);
+    }
+    el.href = href;
+  }
+
+  function pmSeoIsoDuration(sec) {
+    const n = Math.max(0, Math.floor(Number(sec) || 0));
+    const h = Math.floor(n / 3600);
+    const m = Math.floor((n % 3600) / 60);
+    const s = n % 60;
+    let out = 'PT';
+    if (h) out += `${h}H`;
+    if (m) out += `${m}M`;
+    if (s || (!h && !m)) out += `${s}S`;
+    return out;
+  }
+
+  function pmSeoApply(opts = {}) {
+    const title = opts.title || PM_SEO_DEFAULT.title;
+    const description = opts.description || PM_SEO_DEFAULT.description;
+    const url = opts.url || `${PM_SEO_ORIGIN}/`;
+    const image = opts.image || `${PM_SEO_ORIGIN}/assets/og-image.png`;
+    document.title = title;
+    pmSeoSetMeta('description', description);
+    pmSeoSetMeta('robots', 'index,follow,max-image-preview:large');
+    pmSeoSetMeta('og:title', title, 'property');
+    pmSeoSetMeta('og:description', description, 'property');
+    pmSeoSetMeta('og:url', url, 'property');
+    pmSeoSetMeta('og:image', image, 'property');
+    pmSeoSetMeta('twitter:title', title);
+    pmSeoSetMeta('twitter:description', description);
+    pmSeoSetMeta('twitter:image', image);
+    pmSeoCanonical(url);
+
+    let vld = document.getElementById('pmSeoVideoJson');
+    if (opts.video) {
+      const v = opts.video;
+      const data = {
+        '@context': 'https://schema.org',
+        '@type': 'VideoObject',
+        name: String(v.title || v.id || 'Projekt Melody VOD'),
+        description,
+        uploadDate: v.date || undefined,
+        duration: pmSeoIsoDuration(v.duration),
+        thumbnailUrl: image,
+        embedUrl: url,
+        url,
+        isFamilyFriendly: false
+      };
+      if (!vld) {
+        vld = document.createElement('script');
+        vld.id = 'pmSeoVideoJson';
+        vld.type = 'application/ld+json';
+        document.head.appendChild(vld);
+      }
+      vld.textContent = JSON.stringify(data);
+    } else if (vld) {
+      vld.remove();
+    }
+  }
+
+  function pmSeoApplySection(section) {
+    if (state.modalOpen) return;
+    const copy = PM_SEO_SECTION[section] || PM_SEO_SECTION.home;
+    const hash = section && section !== 'home' ? `#${section}` : '';
+    pmSeoApply({
+      title: copy.title,
+      description: copy.description,
+      url: `${PM_SEO_ORIGIN}/${hash}`
+    });
+  }
+
+  function pmSeoVideoPath(id) {
+    return `/vod/${encodeURIComponent(String(id || ''))}`;
+  }
+
+  function pmSeoDeepVideoId() {
+    const fromPath = location.pathname.match(/^\/vod\/([^/]+)\/?$/)?.[1];
+    if (fromPath) {
+      try {
+        return decodeURIComponent(fromPath);
+      } catch {
+        return fromPath;
+      }
+    }
+    return new URLSearchParams(window.location.search).get('v') || '';
+  }
+
+  function pmSeoApplyVideo(v) {
+    if (!v) return;
+    const tags = Array.isArray(v.tags) ? v.tags.filter(Boolean).slice(0, 6).join(', ') : '';
+    const desc = `Watch "${v.title}" — archived Projekt Melody Twitch VOD${tags ? ` (${tags})` : ''}. Stream date ${fmtDate(v.date)}. Replay with resume, tags, and community timestamps.`;
+    pmSeoApply({
+      title: `${v.title} — Projekt Melody VOD`,
+      description: desc.slice(0, 300),
+      url: `${PM_SEO_ORIGIN}${pmSeoVideoPath(v.id)}`,
+      video: v
+    });
+  }
+
+  function pmSeoRenderCatalogLinks() {
+    const nav = document.getElementById('seoCatalog');
+    if (!nav || !Array.isArray(videos)) return;
+    const links = [`<a href="/vods">Projekt Melody VOD list</a>`];
+    for (const v of videos) {
+      if (!v?.id) continue;
+      links.push(
+        `<a href="${pmSeoVideoPath(v.id)}">${safeText(String(v.title || v.id))}</a>`
+      );
+    }
+    nav.innerHTML = links.join('');
+  }
+
+  function pmSeoReadQuery() {
+    const q = new URLSearchParams(window.location.search).get('q');
+    if (!q) return;
+    const input = document.getElementById('searchInput');
+    query = q;
+    if (input) input.value = q;
+    renderAll();
+  }
+
   let videos = [];
   let vodRankById = new Map();
   let vodTotal = 0;
@@ -5543,6 +6637,24 @@ html:not(.age-verified) body {
     timer: null,
     catalogTimer: null
   };
+
+  const PM_TAG_BLOCKLIST = new Set(['2d', '3d']);
+
+  function pmTagBlocked(tag) {
+    return PM_TAG_BLOCKLIST.has(String(tag || '').trim().toLowerCase());
+  }
+
+  function pmSanitizeCatalogVideos(list) {
+    if (!Array.isArray(list)) return [];
+    return list.map(entry => {
+      if (!entry || typeof entry !== 'object') return entry;
+      const tags = Array.isArray(entry.tags)
+        ? entry.tags.map(t => String(t)).filter(t => t && !pmTagBlocked(t))
+        : entry.tags;
+      if (!Array.isArray(entry.tags) || tags.length === entry.tags.length) return entry;
+      return { ...entry, tags };
+    });
+  }
 
   const pmTags = {
     vocabulary: [],
@@ -5582,7 +6694,7 @@ html:not(.age-verified) body {
       if (!res.ok) return;
       const data = await res.json();
       const list = Array.isArray(data?.tags) ? data.tags : [];
-      pmTags.vocabulary = list.map(t => String(t || '').trim()).filter(Boolean);
+      pmTags.vocabulary = list.map(t => String(t || '').trim()).filter(t => t && !pmTagBlocked(t));
       pmTags.loaded = true;
     } catch {}
   }
@@ -5612,7 +6724,9 @@ html:not(.age-verified) body {
   }
 
   function getDisplayTags(v) {
-    const catalog = Array.isArray(v?.tags) ? v.tags.map(t => String(t)) : [];
+    const catalog = Array.isArray(v?.tags)
+      ? v.tags.map(t => String(t)).filter(t => !pmTagBlocked(t))
+      : [];
     const counts = pmCommunityTagMap(v?.id);
     const community = Object.entries(counts)
       .filter(([name, n]) => Number(n) > 0 && pmTagInVocabulary(name))
@@ -5622,7 +6736,7 @@ html:not(.age-verified) body {
     const seen = new Set();
     for (const t of [...catalog, ...community]) {
       const key = String(t).toLowerCase();
-      if (!key || seen.has(key)) continue;
+      if (!key || seen.has(key) || pmTagBlocked(key)) continue;
       seen.add(key);
       display.push(String(t));
     }
@@ -5669,6 +6783,7 @@ html:not(.age-verified) body {
 
   function pmTagInVocabulary(tag) {
     const n = String(tag || '').toLowerCase();
+    if (pmTagBlocked(n)) return false;
     return pmTags.vocabulary.some(t => String(t).toLowerCase() === n);
   }
 
@@ -5944,24 +7059,117 @@ html:not(.age-verified) body {
     fetchPmStats();
     pmStats.timer = window.setInterval(fetchPmStats, 20000);
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) fetchPmStats();
+      if (!document.hidden) {
+        fetchPmStats();
+        void reloadCatalogFromNetwork();
+      }
     });
-    pmStats.catalogTimer = window.setInterval(async () => {
-      try {
-        const res = await fetch('./videos.json', { cache: 'default' });
-        if (!res.ok) return;
-        const text = await res.text();
-        if (text === pmCatalogSig) return;
-        pmCatalogSig = text;
-        const data = JSON.parse(text);
-        if (!Array.isArray(data)) return;
-        videos = data;
-        buildVodIndex();
-        syncGridVisibleCount();
+    pmStats.catalogTimer = window.setInterval(() => { void reloadCatalogFromNetwork(); }, 30000);
+  }
+
+  const PM_PRESENCE_MS = 10000;
+
+  const pmPresence = {
+    sid: '',
+    heartbeatTimer: null,
+    pollTimer: null,
+    online: 0,
+    visitorsToday: 0,
+    visitorsDay: '',
+    active: false
+  };
+
+  function pmPresenceSid() {
+    const key = 'pm_presence_sid';
+    try {
+      let sid = sessionStorage.getItem(key);
+      if (!sid) {
+        sid = pmUuid();
+        sessionStorage.setItem(key, sid);
+      }
+      return sid;
+    } catch {
+      return pmUuid();
+    }
+  }
+
+  function pmPresenceUi() {
+    const root = document.getElementById('headerOnline');
+    const countEl = document.getElementById('headerOnlineCount');
+    if (!root || !countEl) return;
+    if (!pmPresence.active) {
+      root.hidden = true;
+      return;
+    }
+    root.hidden = false;
+    countEl.textContent = String(Math.max(1, Number(pmPresence.online) || 0));
+  }
+
+  async function pmPresenceHeartbeat() {
+    if (document.hidden) return;
+    try {
+      const res = await fetch('/api/presence', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ sid: pmPresence.sid })
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data?.sid) {
+        pmPresence.sid = String(data.sid);
+        try {
+          sessionStorage.setItem('pm_presence_sid', pmPresence.sid);
+        } catch {}
+      }
+      if (typeof data?.online === 'number') {
+        pmPresence.active = true;
+        pmPresence.online = data.online;
+        pmPresenceUi();
+      }
+      if (typeof data?.visitorsToday === 'number') {
+        pmPresence.visitorsToday = data.visitorsToday;
+        pmPresence.visitorsDay = String(data.visitorsDay || '');
         updateHeroStats();
-        renderAll();
-      } catch {}
-    }, 60000);
+      }
+    } catch {}
+  }
+
+  async function pmPresencePoll() {
+    if (document.hidden) return;
+    try {
+      const res = await fetch('/api/presence', { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (typeof data?.online === 'number') {
+        pmPresence.active = true;
+        pmPresence.online = data.online;
+        pmPresenceUi();
+      }
+      if (typeof data?.visitorsToday === 'number') {
+        pmPresence.visitorsToday = data.visitorsToday;
+        pmPresence.visitorsDay = String(data.visitorsDay || '');
+        updateHeroStats();
+      }
+    } catch {}
+  }
+
+  function startPmPresence() {
+    if (pmPresence.heartbeatTimer) return;
+    try {
+      pmPresence.sid = pmPresenceSid();
+    } catch {
+      return;
+    }
+    void pmPresenceHeartbeat();
+    pmPresence.heartbeatTimer = window.setInterval(pmPresenceHeartbeat, PM_PRESENCE_MS);
+    pmPresence.pollTimer = window.setInterval(pmPresencePoll, PM_PRESENCE_MS);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        void pmPresenceHeartbeat();
+        void pmPresencePoll();
+      }
+    });
   }
 
   async function recordVideoView(id) {
@@ -6012,6 +7220,11 @@ html:not(.age-verified) body {
     ad: null,
     resumePendingSec: null,
     resumeSavedAt: 0,
+    resumePromptSec: null,
+    upNextCancelled: false,
+    browseListIds: [],
+    upNextTickTimer: null,
+    upNextPlayTimer: null,
     controlsHideTimer: null,
     controlsHidden: false,
     lastTapAt: 0,
@@ -6042,7 +7255,13 @@ html:not(.age-verified) body {
   };
   const KOFI_ID = 'iznos';
   const KOFI_TEXT = 'Support me on Ko-fi';
+  const PATREON_URL = 'https://www.patreon.com/c/FRDS_Melody';
   const PM_RESUME_SAVE_MS = 5000;
+  const PM_RESUME_PROMPT_MIN_SEC = 45;
+  const PM_RESUME_END_BUFFER_SEC = 120;
+  const PM_UPNEXT_LEAD_SEC = 15;
+  const PM_UPNEXT_COUNTDOWN_SEC = 8;
+  const PM_AUTOPLAY_NEXT_KEY = 'pm_autoplay_next';
   const PM_CONTROLS_AUTOHIDE_MS = 2500;
   const PM_TAP_DOUBLE_MS = 280;
   const PM_TAP_SEEK_SEC = 10;
@@ -6053,6 +7272,354 @@ html:not(.age-verified) body {
 
   const PM_TOUCH_PLAYER_MQ =
     '(max-width: 520px), ((hover: none) and (pointer: coarse) and (max-width: 900px)), ((hover: none) and (pointer: coarse) and (max-height: 430px))';
+
+  /** Paste spot codes from TrafficStars → Manage Ad Spots. Leave spot empty to disable a slot. */
+  const PM_TRAFFICSTARS = {
+    enabled: true,
+    skipAfterSec: 5,
+    keywords: '',
+    xoc: '',
+    spots: {
+      header: { spot: '', width: 728, height: 90 },
+      footer: { spot: '', width: 728, height: 90 },
+      modal: { spot: '', width: 300, height: 250 },
+      preroll: { spot: '', mode: 'vast', width: 300, height: 250 },
+      prerollMobile: { spot: '' },
+      popunder: { spot: '', firstDelay: 5, count: 1 }
+    }
+  };
+
+  const pmTs = {
+    mounted: new Set(),
+    popLoaded: false,
+    xplayer: null,
+    xplayerSpot: '',
+    xplayerStart: null,
+    xplayerEnd: null,
+    xplayerPromise: null
+  };
+
+  function pmTsLoadScript(url) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${url}"]`)) {
+        resolve();
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = url;
+      s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('script load failed'));
+      document.head.appendChild(s);
+    });
+  }
+
+  function pmTsLoadXPlayer() {
+    if (pmTs.xplayerPromise) return pmTs.xplayerPromise;
+    pmTs.xplayerPromise = (async () => {
+      if (!document.querySelector('link[href*="xplayer-ads.css"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdn.tsyndicate.com/sdk/xplayer-ads.css';
+        document.head.appendChild(link);
+      }
+      await pmTsLoadScript('https://cdn.tsyndicate.com/sdk/xplayer-ads.js');
+    })();
+    return pmTs.xplayerPromise;
+  }
+
+  function pmTsPrerollSpot(cfg) {
+    const mobile = PM_TRAFFICSTARS.spots.prerollMobile;
+    if (isMobile() && pmTsSpotOn(mobile)) return String(mobile.spot).trim();
+    return String(cfg.spot || '').trim();
+  }
+
+  function pmTsEnsureXPlayer(spot) {
+    if (pmTs.xplayer && pmTs.xplayerSpot === spot) return pmTs.xplayer;
+    const opts = {
+      spotId: spot,
+      showNumber: 99,
+      sessionTime: 6,
+      mobileStyles: true,
+      onStart: startFn => {
+        pmTs.xplayerStart = startFn;
+      },
+      onEnd: () => {
+        if (state.ad?.emptyTimer) {
+          window.clearTimeout(state.ad.emptyTimer);
+          state.ad.emptyTimer = null;
+        }
+        if (typeof pmTs.xplayerEnd === 'function') {
+          const done = pmTs.xplayerEnd;
+          pmTs.xplayerEnd = null;
+          done();
+        }
+      }
+    };
+    const kw = String(PM_TRAFFICSTARS.keywords || '').trim();
+    if (kw) opts.keywords = kw;
+    pmTs.xplayerSpot = spot;
+    pmTs.xplayerStart = null;
+    pmTs.xplayer = new window.XPlayerAds('#playerWrap', opts);
+    return pmTs.xplayer;
+  }
+
+  function pmTsSpotOn(cfg) {
+    return !!(PM_TRAFFICSTARS.enabled && cfg && String(cfg.spot || '').trim());
+  }
+
+  function pmTsBannerQuery() {
+    const q = [];
+    const kw = String(PM_TRAFFICSTARS.keywords || '').trim();
+    const xoc = String(PM_TRAFFICSTARS.xoc || '').trim();
+    if (kw) q.push(`keywords=${encodeURIComponent(kw)}`);
+    if (xoc) q.push(`xoc=${encodeURIComponent(xoc)}`);
+    return q.length ? `&${q.join('&')}` : '';
+  }
+
+  function pmTsBannerSrc(cfg) {
+    const spot = encodeURIComponent(String(cfg.spot).trim());
+    const w = Number(cfg.width) || 300;
+    const h = Number(cfg.height) || 250;
+    return `https://tsyndicate.com/iframes2/${spot}.html?w=${w}&h=${h}${pmTsBannerQuery()}`;
+  }
+
+  function pmTsSlotFilled(target) {
+    if (!target) return false;
+    const root = target.closest?.('.ts-preroll-inner') || target;
+    if (root.querySelector('iframe, img, object, embed')) return true;
+    return root.childElementCount > 0 && (root.offsetHeight > 20 || root.offsetWidth > 20);
+  }
+
+  function pmTsMountBanner(container, cfg, mountKey) {
+    if (!container || !pmTsSpotOn(cfg)) return null;
+    const key = mountKey || String(cfg.spot);
+    if (mountKey !== 'preroll' && pmTs.mounted.has(key)) return null;
+
+    const w = Number(cfg.width) || 300;
+    const h = Number(cfg.height) || 250;
+    container.innerHTML = '';
+
+    const iframe = document.createElement('iframe');
+    iframe.className = 'ts-banner-frame';
+    iframe.width = String(w);
+    iframe.height = String(h);
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('loading', 'lazy');
+    iframe.setAttribute('sandbox', 'allow-same-origin allow-popups allow-forms allow-scripts');
+    iframe.src = pmTsBannerSrc(cfg);
+    container.appendChild(iframe);
+
+    const strip = container.closest('.ts-strip');
+    if (strip) {
+      strip.hidden = false;
+      strip.classList.add('show');
+    }
+
+    if (mountKey !== 'preroll') pmTs.mounted.add(key);
+    return iframe;
+  }
+
+  function pmTsInitStatic() {
+    pmTsMountBanner(document.getElementById('tsHeaderSlot'), PM_TRAFFICSTARS.spots.header, 'header');
+    pmTsMountBanner(document.getElementById('tsFooterSlot'), PM_TRAFFICSTARS.spots.footer, 'footer');
+    pmTsInitPopunder();
+  }
+
+  function pmTsInitPopunder() {
+    const pop = PM_TRAFFICSTARS.spots.popunder;
+    if (!pmTsSpotOn(pop) || pmTs.popLoaded) return;
+    pmTs.popLoaded = true;
+
+    const s = document.createElement('script');
+    s.src = 'https://cdn.tsyndicate.com/sdk/v1/p.js';
+    s.async = true;
+    s.defer = true;
+    s.setAttribute('data-ts-spot', String(pop.spot).trim());
+    s.setAttribute('data-ts-ignore-filter', 'skipAdBtn,tsPrerollWrap,modalClose,vodCard,playerWrap,vpPlayGate');
+    if (pop.firstDelay != null) s.setAttribute('data-ts-first-delay', String(pop.firstDelay));
+    if (pop.count != null) s.setAttribute('data-ts-count', String(pop.count));
+    const kw = String(PM_TRAFFICSTARS.keywords || '').trim();
+    if (kw) s.setAttribute('data-ts-categories', kw);
+    const xoc = String(PM_TRAFFICSTARS.xoc || '').trim();
+    if (xoc) s.setAttribute('data-ts-xoc', xoc);
+    document.head.appendChild(s);
+  }
+
+  function pmTsShowModalBanner() {
+    pmTsMountBanner(document.getElementById('tsModalSlot'), PM_TRAFFICSTARS.spots.modal, 'modal');
+  }
+
+  function pmTsHideModalBanner() {
+    const strip = document.getElementById('tsModalStrip');
+    const slot = document.getElementById('tsModalSlot');
+    if (slot) slot.innerHTML = '';
+    if (strip) strip.classList.remove('show');
+    pmTs.mounted.delete('modal');
+  }
+
+  function pmTsClearPreroll() {
+    const wrap = document.getElementById('tsPrerollWrap');
+    const slot = document.getElementById('tsPrerollSlot');
+    const skipBtn = document.getElementById('skipAdBtn');
+    const placeholder = document.getElementById('tsPrerollPlaceholder');
+    if (state.ad?.countdown) window.clearInterval(state.ad.countdown);
+    if (state.ad?.maxTimer) window.clearTimeout(state.ad.maxTimer);
+    if (state.ad?.fillPoll) window.clearInterval(state.ad.fillPoll);
+    if (state.ad?.emptyTimer) window.clearTimeout(state.ad.emptyTimer);
+    if (skipBtn) {
+      skipBtn.disabled = true;
+      skipBtn.onclick = null;
+    }
+    if (slot) slot.innerHTML = '';
+    if (wrap) {
+      wrap.classList.remove('show', 'ts-ad-loaded');
+      wrap.hidden = true;
+    }
+    if (placeholder) placeholder.textContent = 'Loading ad…';
+    pmTs.mounted.delete('preroll');
+    state.ad = null;
+  }
+
+  function pmTsEndPreroll() {
+    const done = state.ad?.resolve;
+    pmTsClearPreroll();
+    if (typeof done === 'function') done();
+  }
+
+  function pmTsHasPreroll() {
+    const cfg = PM_TRAFFICSTARS.spots.preroll;
+    const mobile = PM_TRAFFICSTARS.spots.prerollMobile;
+    return pmTsSpotOn(cfg) || (isMobile() && pmTsSpotOn(mobile));
+  }
+
+  function pmTsMaybePreroll() {
+    const cfg = PM_TRAFFICSTARS.spots.preroll;
+    if (!pmTsHasPreroll()) return Promise.resolve();
+    if (cfg.mode === 'banner') return pmTsMaybeBannerPreroll(cfg);
+    return pmTsMaybeVastPreroll(cfg);
+  }
+
+  async function pmTsMaybeVastPreroll(cfg) {
+    const spot = pmTsPrerollSpot(cfg);
+    if (!spot || !document.getElementById('playerWrap')) return;
+
+    pmTsClearPreroll();
+    try {
+      await pmTsLoadXPlayer();
+    } catch {
+      return;
+    }
+    if (typeof window.XPlayerAds !== 'function') return;
+
+    return new Promise(resolve => {
+      state.ad = { resolve, type: 'trafficstars-vast' };
+      pmTsEnsureXPlayer(spot);
+
+      let settled = false;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        pmTsEndPreroll();
+      };
+
+      pmTs.xplayerEnd = finish;
+      state.ad.maxTimer = window.setTimeout(finish, 45000);
+      state.ad.emptyTimer = window.setTimeout(finish, 12000);
+
+      const tryStart = () => {
+        const start = pmTs.xplayerStart;
+        if (typeof start !== 'function') return false;
+        try {
+          start();
+        } catch {
+          finish();
+        }
+        return true;
+      };
+
+      if (!tryStart()) {
+        let tries = 0;
+        state.ad.fillPoll = window.setInterval(() => {
+          tries += 1;
+          if (tryStart() || tries > 30) {
+            window.clearInterval(state.ad.fillPoll);
+            state.ad.fillPoll = null;
+            if (tries > 30 && !settled) finish();
+          }
+        }, 200);
+      }
+    });
+  }
+
+  function pmTsMaybeBannerPreroll(cfg) {
+    return new Promise(resolve => {
+      pmTsClearPreroll();
+      const wrap = document.getElementById('tsPrerollWrap');
+      const slot = document.getElementById('tsPrerollSlot');
+      const skipBtn = document.getElementById('skipAdBtn');
+      if (!wrap || !slot || !skipBtn) {
+        resolve();
+        return;
+      }
+
+      state.ad = { resolve, type: 'trafficstars' };
+      wrap.hidden = false;
+      wrap.classList.remove('ts-ad-loaded');
+      wrap.classList.add('show');
+      const frame = pmTsMountBanner(slot, cfg, 'preroll');
+
+      const markLoaded = () => {
+        wrap.classList.add('ts-ad-loaded');
+        const ph = document.getElementById('tsPrerollPlaceholder');
+        if (ph) ph.textContent = '';
+      };
+
+      if (frame) {
+        frame.addEventListener('load', markLoaded, { once: true });
+        state.ad.fillPoll = window.setInterval(() => {
+          if (pmTsSlotFilled(slot)) {
+            window.clearInterval(state.ad.fillPoll);
+            state.ad.fillPoll = null;
+            if (state.ad?.emptyTimer) {
+              window.clearTimeout(state.ad.emptyTimer);
+              state.ad.emptyTimer = null;
+            }
+            markLoaded();
+          }
+        }, 400);
+      }
+
+      state.ad.emptyTimer = window.setTimeout(() => {
+        if (!slot || pmTsSlotFilled(slot)) return;
+        pmTsEndPreroll();
+      }, 8000);
+
+      let left = Math.max(1, Number(PM_TRAFFICSTARS.skipAfterSec) || 5);
+      skipBtn.disabled = true;
+      skipBtn.textContent = `Skip in ${left}s`;
+      state.ad.countdown = window.setInterval(() => {
+        left -= 1;
+        if (left > 0) {
+          skipBtn.textContent = `Skip in ${left}s`;
+          return;
+        }
+        window.clearInterval(state.ad.countdown);
+        state.ad.countdown = null;
+        skipBtn.disabled = false;
+        skipBtn.textContent = 'Skip ad';
+      }, 1000);
+
+      skipBtn.onclick = e => {
+        e.stopPropagation();
+        if (skipBtn.disabled) return;
+        pmTsEndPreroll();
+      };
+
+      state.ad.maxTimer = window.setTimeout(() => pmTsEndPreroll(), 45000);
+    });
+  }
 
   const pmMobileUi = {
     controlsVisible: true,
@@ -6364,6 +7931,202 @@ html:not(.age-verified) body {
     state.resumePendingSec = null;
   }
 
+  function vpShouldOfferResume(v, savedSec, fromDeepLink) {
+    if (fromDeepLink) return false;
+    if (!Number.isFinite(savedSec) || savedSec < PM_RESUME_PROMPT_MIN_SEC) return false;
+    const dur = Number(v?.duration);
+    if (Number.isFinite(dur) && dur > 0 && savedSec >= dur - PM_RESUME_END_BUFFER_SEC) {
+      writeResumeSec(v.id, 0);
+      return false;
+    }
+    return true;
+  }
+
+  function vpHideResumePrompt() {
+    const el = document.getElementById('vpResumePrompt');
+    if (el) {
+      el.classList.remove('show');
+      el.hidden = true;
+    }
+    state.resumePromptSec = null;
+  }
+
+  function vpShowResumePrompt(v, savedSec) {
+    const el = document.getElementById('vpResumePrompt');
+    const text = document.getElementById('vpResumePromptText');
+    if (!el || !Number.isFinite(savedSec)) return;
+    state.resumePromptSec = savedSec;
+    if (text) text.textContent = `You were at ${fmtHms(savedSec)}`;
+    el.hidden = false;
+    el.classList.add('show');
+    vpHidePlayGate();
+  }
+
+  function vpAutoplayNextEnabled() {
+    const chk = document.getElementById('autoplayNextChk');
+    if (chk) {
+      try { localStorage.setItem(PM_AUTOPLAY_NEXT_KEY, chk.checked ? '1' : '0'); } catch {}
+      return !!chk.checked;
+    }
+    try { return localStorage.getItem(PM_AUTOPLAY_NEXT_KEY) !== '0'; } catch { return true; }
+  }
+
+  function vpInitAutoplayNextSetting() {
+    const chk = document.getElementById('autoplayNextChk');
+    if (!chk) return;
+    try {
+      const raw = localStorage.getItem(PM_AUTOPLAY_NEXT_KEY);
+      if (raw === '0') chk.checked = false;
+      else if (raw === '1') chk.checked = true;
+      else chk.checked = !isMobile();
+    } catch {
+      chk.checked = !isMobile();
+    }
+    chk.addEventListener('change', () => vpAutoplayNextEnabled());
+  }
+
+  function vpGetNextVideoId(currentId) {
+    const id = String(currentId || '');
+    const list = state.browseListIds?.length
+      ? state.browseListIds
+      : filteredVideos().map(v => String(v.id));
+    const idx = list.indexOf(id);
+    if (idx >= 0 && idx < list.length - 1) return list[idx + 1];
+    const cur = getVideoById(id);
+    if (cur) {
+      const rec = getRecommendedVideos(cur, 1);
+      if (rec[0] && rec[0].id !== id) return rec[0].id;
+    }
+    return null;
+  }
+
+  function vpHideUpNext() {
+    const el = document.getElementById('vpUpNext');
+    if (el) {
+      el.classList.remove('show');
+      el.hidden = true;
+    }
+    if (state.upNextTickTimer) {
+      window.clearInterval(state.upNextTickTimer);
+      state.upNextTickTimer = null;
+    }
+    if (state.upNextPlayTimer) {
+      window.clearTimeout(state.upNextPlayTimer);
+      state.upNextPlayTimer = null;
+    }
+  }
+
+  function vpShowUpNext(nextV, secondsLeft, soon) {
+    const wrap = document.getElementById('vpUpNext');
+    const label = document.getElementById('vpUpNextLabel');
+    const title = document.getElementById('vpUpNextTitle');
+    if (!wrap || !nextV) return;
+    if (label) {
+      label.textContent = soon
+        ? 'Up next'
+        : `Up next in ${Math.max(1, Math.ceil(secondsLeft))}s`;
+    }
+    if (title) title.textContent = nextV.title || 'Untitled';
+    wrap.hidden = false;
+    wrap.classList.add('show');
+  }
+
+  function vpUpNextMaybeShow(video) {
+    if (!state.modalOpen || !video || vp.isLive || state.ad) return;
+    if (!vpAutoplayNextEnabled() || state.upNextCancelled) return;
+    const dur = video.duration;
+    if (!Number.isFinite(dur) || dur <= 0) return;
+    const remaining = dur - video.currentTime;
+    if (remaining > PM_UPNEXT_LEAD_SEC || remaining <= 0.2) {
+      if (!state.upNextPlayTimer && !state.upNextTickTimer) vpHideUpNext();
+      return;
+    }
+    const nextId = vpGetNextVideoId(state.selectedVideoId);
+    const nextV = nextId ? getVideoById(nextId) : null;
+    if (!nextV) {
+      vpHideUpNext();
+      return;
+    }
+    const soon = remaining > PM_UPNEXT_COUNTDOWN_SEC;
+    vpShowUpNext(nextV, remaining, soon);
+    if (state.upNextTickTimer) return;
+    state.upNextTickTimer = window.setInterval(() => {
+      const v = vpEls().video;
+      if (!v || !state.modalOpen) {
+        vpHideUpNext();
+        return;
+      }
+      const left = v.duration - v.currentTime;
+      if (left > PM_UPNEXT_LEAD_SEC || left <= 0.2) {
+        vpHideUpNext();
+        return;
+      }
+      vpShowUpNext(nextV, left, left > PM_UPNEXT_COUNTDOWN_SEC);
+    }, 250);
+  }
+
+  async function vpPlayNextVideo() {
+    const nextId = vpGetNextVideoId(state.selectedVideoId);
+    if (!nextId) return;
+    vpHideUpNext();
+    state.upNextCancelled = false;
+    await vpLoadVideoInModal(nextId, { chain: true });
+  }
+
+  async function vpBeginPlaybackAfterPrompt() {
+    const v = getVideoById(state.selectedVideoId);
+    if (!v || !vp.pendingLoad) return;
+    const src = vp.pendingLoad.src || getPrimarySrc(v);
+
+    if (src && isHlsSrc(src)) {
+      const probe = await probeStreamReady(src);
+      if (probe.ok === false && probe.status === 404) {
+        vp.playbackStarted = false;
+        vpShowPlayGate(v, 'Tap to retry');
+        vpShowError('Video files not on server yet. Finish the R2 upload from RunPod, then try again.');
+        return;
+      }
+    }
+
+    try {
+      await pmTsMaybePreroll();
+      await loadStream(src, v.title, { fromTap: vpNeedsTapToStart() || vp.playbackStarted });
+      void vpCcLoadForVideo(v);
+      if (!vpNeedsTapToStart()) {
+        const { video } = vpEls();
+        if (video) void vpPlayWhenReady(video);
+      }
+    } catch {
+      vp.playbackStarted = false;
+      vpShowPlayGate(v, 'Tap to retry');
+      vpShowError('Stream error');
+    }
+  }
+
+  function vpOnResumeContinue() {
+    const saved = state.resumePromptSec;
+    vpHideResumePrompt();
+    if (Number.isFinite(saved) && saved > 0) state.resumePendingSec = saved;
+    if (vpNeedsTapToStart()) {
+      vp.playbackStarted = true;
+      void vpBeginPlaybackAfterPrompt();
+      return;
+    }
+    void vpBeginPlaybackAfterPrompt();
+  }
+
+  function vpOnResumeStartOver() {
+    vpHideResumePrompt();
+    if (state.selectedVideoId) writeResumeSec(state.selectedVideoId, 0);
+    state.resumePendingSec = null;
+    if (vpNeedsTapToStart()) {
+      vp.playbackStarted = true;
+      void vpBeginPlaybackAfterPrompt();
+      return;
+    }
+    void vpBeginPlaybackAfterPrompt();
+  }
+
   function setControlsHidden(hidden) {
     const box = document.getElementById('modalBox');
     if (!box) return;
@@ -6530,6 +8293,20 @@ html:not(.age-verified) body {
     return v || '#28d4ec';
   }
 
+  function renderPatreonLinks() {
+    const mobileHeader = window.matchMedia('(max-width: 900px)').matches;
+    const tiny = window.matchMedia('(max-width: 360px)').matches;
+    const label = tiny ? 'Patron' : mobileHeader ? 'Patreon' : 'Support on Patreon';
+    document.querySelectorAll('.patreon-label').forEach((el) => {
+      el.textContent = label;
+    });
+    document.querySelectorAll(
+      '#patreonHeader, #patreonFooter, #aboutPatreonBtn, .about-channel--patreon'
+    ).forEach((el) => {
+      if (el instanceof HTMLAnchorElement) el.href = PATREON_URL;
+    });
+  }
+
   function renderKofi() {
     const header = document.getElementById('kofiHeader');
     const footer = document.getElementById('kofiFooter');
@@ -6590,24 +8367,26 @@ html:not(.age-verified) body {
     document.head.appendChild(s);
   }
 
+  renderPatreonLinks();
   loadKofiWidget();
   window.addEventListener('resize', () => {
-    if (!window.kofiwidget2) return;
-    window.clearTimeout(window.__kofiResizeT);
-    window.__kofiResizeT = window.setTimeout(renderKofi, 180);
+    window.clearTimeout(window.__headerSupportResizeT);
+    window.__headerSupportResizeT = window.setTimeout(() => {
+      renderPatreonLinks();
+      if (window.kofiwidget2) renderKofi();
+    }, 180);
   });
   setupMobileNav();
   setupMainNav();
 
   async function loadVideos() {
-    const url = './videos.json';
-    const res = await fetch(url, { cache: 'default' });
-    if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
+    const res = await fetch(pmCatalogFetchUrl(), { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Failed to load catalog: ${res.status}`);
     const text = await res.text();
     pmCatalogSig = text;
     const data = JSON.parse(text);
     if (!Array.isArray(data)) throw new Error('videos.json must be an array');
-    videos = data;
+    videos = pmSanitizeCatalogVideos(data);
     buildVodIndex();
     syncGridVisibleCount();
     updateHeroStats();
@@ -6668,14 +8447,17 @@ html:not(.age-verified) body {
   function createHlsInstance(Hls) {
     const mobile = vpIsTouchUi();
     return new Hls({
-      enableWorker: typeof Worker !== 'undefined',
+      enableWorker: typeof Worker !== 'undefined' && !vpIsAndroid(),
       lowLatencyMode: false,
-      startLevel: -1,
+      startLevel: mobile ? 0 : -1,
       capLevelToPlayerSize: mobile,
-      backBufferLength: mobile ? 30 : 90,
-      maxBufferLength: mobile ? 45 : 60,
-      maxMaxBufferLength: mobile ? 90 : 120,
-      abrEwmaDefaultEstimate: mobile ? 5000000 : 12000000,
+      backBufferLength: mobile ? 20 : 90,
+      maxBufferLength: mobile ? 20 : 60,
+      maxMaxBufferLength: mobile ? 40 : 120,
+      manifestLoadingTimeOut: mobile ? 15000 : 30000,
+      levelLoadingTimeOut: mobile ? 15000 : 30000,
+      fragLoadingTimeOut: mobile ? 45000 : 90000,
+      abrEwmaDefaultEstimate: mobile ? 3000000 : 12000000,
       abrBandWidthFactor: 0.95,
       abrBandWidthUpFactor: 0.9
     });
@@ -6684,14 +8466,24 @@ html:not(.age-verified) body {
   function bindHlsFatalRecovery(hls, onFatal) {
     const Hls = window.Hls;
     if (!hls || !Hls) return;
+    let netRetries = 0;
+    let mediaRetries = 0;
     hls.on(Hls.Events.ERROR, (evt, data) => {
       if (!data?.fatal) return;
       switch (data.type) {
         case Hls.ErrorTypes.NETWORK_ERROR:
-          try { hls.startLoad(); } catch {}
+          if (netRetries++ < 2) {
+            try { hls.startLoad(); } catch {}
+          } else if (typeof onFatal === 'function') {
+            onFatal(data);
+          }
           break;
         case Hls.ErrorTypes.MEDIA_ERROR:
-          try { hls.recoverMediaError(); } catch {}
+          if (mediaRetries++ < 2) {
+            try { hls.recoverMediaError(); } catch {}
+          } else if (typeof onFatal === 'function') {
+            onFatal(data);
+          }
           break;
         default:
           if (typeof onFatal === 'function') onFatal(data);
@@ -6705,7 +8497,12 @@ html:not(.age-verified) body {
     const autoplay = !!vpEls().autoplayChk?.checked;
     const resume = state.resumePendingSec != null && Number(state.resumePendingSec) > 0;
     if (!autoplay && !resume) return;
-    if (vpIsAndroid()) {
+    if (vpIsTouchUi()) {
+      await Promise.race([
+        waitEvent(video, 'canplay', 12000),
+        waitEvent(video, 'loadeddata', 12000)
+      ]).catch(() => {});
+    } else if (vpIsAndroid()) {
       await Promise.race([
         waitEvent(video, 'canplay', 10000),
         waitEvent(video, 'loadeddata', 10000)
@@ -6715,6 +8512,13 @@ html:not(.age-verified) body {
       const p = video.play();
       if (p && typeof p.catch === 'function') await p.catch(() => {});
     } catch {}
+    if (video.paused && vpIsTouchUi()) {
+      video.muted = true;
+      try {
+        const p = video.play();
+        if (p && typeof p.catch === 'function') await p.catch(() => {});
+      } catch {}
+    }
   }
 
   function isHlsSrc(src) {
@@ -6722,13 +8526,52 @@ html:not(.age-verified) body {
   }
 
   async function probeStreamReady(src) {
-    if (!src) return false;
+    if (!src) return { ok: false, status: 0 };
     try {
-      const r = await fetch(src, { cache: 'no-store' });
-      return r.ok;
+      const ctrl = new AbortController();
+      const timer = window.setTimeout(() => ctrl.abort(), 6000);
+      const r = await fetch(src, { cache: 'no-store', signal: ctrl.signal });
+      window.clearTimeout(timer);
+      return { ok: r.ok, status: r.status };
     } catch {
-      return false;
+      return { ok: null, status: 0 };
     }
+  }
+
+  function loadScriptOnce(src, timeoutMs) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      const timer = window.setTimeout(() => {
+        try { s.remove(); } catch {}
+        reject(new Error('timeout'));
+      }, timeoutMs);
+      s.onload = () => {
+        window.clearTimeout(timer);
+        resolve();
+      };
+      s.onerror = () => {
+        window.clearTimeout(timer);
+        try { s.remove(); } catch {}
+        reject(new Error('load error'));
+      };
+      document.head.appendChild(s);
+    });
+  }
+
+  function loadHlsJs() {
+    if (window.Hls) return Promise.resolve(window.Hls);
+    if (state.hlsLoader) return state.hlsLoader;
+
+    state.hlsLoader = loadScriptOnce('/vendor/hls.min.js', 10000)
+      .catch(() => loadScriptOnce('https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js', 15000))
+      .then(() => {
+        if (!window.Hls) throw new Error('Failed to load hls.js');
+        return window.Hls;
+      });
+
+    return state.hlsLoader;
   }
 
   function destroyHls() {
@@ -6736,22 +8579,6 @@ html:not(.age-verified) body {
     state.hls = null;
     state.qualityAppliedHls = null;
     syncQualityUi();
-  }
-
-  function loadHlsJs() {
-    if (window.Hls) return Promise.resolve(window.Hls);
-    if (state.hlsLoader) return state.hlsLoader;
-
-    state.hlsLoader = new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js';
-      s.async = true;
-      s.onload = () => resolve(window.Hls);
-      s.onerror = () => reject(new Error('Failed to load hls.js'));
-      document.head.appendChild(s);
-    });
-
-    return state.hlsLoader;
   }
 
   function readSavedQuality() {
@@ -6854,6 +8681,115 @@ html:not(.age-verified) body {
 
   function getPrimarySrc(v) {
     return v?.hlsSrc || v?.src || v?.mp4Src || '';
+  }
+
+  function vpNeedsTapToStart() {
+    return vpIsTouchUi();
+  }
+
+  async function vpResolvePlaybackUrl(url) {
+    const raw = String(url || '');
+    if (!raw || !isHlsSrc(raw) || !vpIsTouchUi()) return raw;
+    try {
+      const abs = new URL(raw, window.location.href).toString();
+      const ctrl = new AbortController();
+      const timer = window.setTimeout(() => ctrl.abort(), 8000);
+      const res = await fetch(abs, { cache: 'no-store', signal: ctrl.signal });
+      window.clearTimeout(timer);
+      if (!res.ok) return raw;
+      const text = await res.text();
+      if (/^#EXT-X-STREAM-INF/m.test(text)) {
+        return pmParseM3u8PreviewVariant(text, abs) || raw;
+      }
+      return raw;
+    } catch {
+      return raw;
+    }
+  }
+
+  function vpShowPlayGate(v, label) {
+    const gate = document.getElementById('vpPlayGate');
+    const gateLabel = document.getElementById('vpPlayGateLabel');
+    if (gateLabel && label) gateLabel.textContent = label;
+    if (gate) {
+      gate.hidden = false;
+      gate.classList.remove('loading');
+      gate.classList.add('show');
+      if (v && pmHasUsableThumb(v)) {
+        const url = new URL(String(v.thumbSrc || ''), window.location.href).toString();
+        gate.style.backgroundImage =
+          `linear-gradient(rgba(3,1,10,0.35), rgba(3,1,10,0.6)), url("${url.replace(/"/g, '%22')}")`;
+      } else {
+        gate.style.backgroundImage = '';
+      }
+    }
+    const { spinner } = vpEls();
+    if (spinner) spinner.classList.remove('active');
+  }
+
+  function vpSetPlayGateLoading(on, label) {
+    const gate = document.getElementById('vpPlayGate');
+    const gateLabel = document.getElementById('vpPlayGateLabel');
+    if (gate) {
+      gate.hidden = false;
+      gate.classList.add('show');
+      gate.classList.toggle('loading', !!on);
+    }
+    if (gateLabel && label) gateLabel.textContent = label;
+  }
+
+  function vpHidePlayGate() {
+    const gate = document.getElementById('vpPlayGate');
+    if (gate) {
+      gate.classList.remove('show', 'loading');
+      gate.hidden = true;
+      gate.style.backgroundImage = '';
+    }
+  }
+
+  async function vpStartPlayback() {
+    if (!state.modalOpen || !vp.pendingLoad || vp.playbackStarted) return;
+    vp.playbackStarted = true;
+    vpClearError();
+    vpSetPlayGateLoading(true, 'Loading…');
+
+    const { src, title, vod } = vp.pendingLoad;
+    try {
+      if (src && isHlsSrc(src)) {
+        const probe = await probeStreamReady(src);
+        if (probe.ok === false && probe.status === 404) {
+          vp.playbackStarted = false;
+          vpShowPlayGate(vod, 'Tap to retry');
+          vpShowError('Video not on server yet.');
+          return;
+        }
+      }
+      await pmTsMaybePreroll();
+      await loadStream(src, title, { fromTap: true });
+      if (vod) void vpCcLoadForVideo(vod);
+
+      const { video } = vpEls();
+      if (video) {
+        try { video.preload = 'auto'; } catch {}
+        try {
+          const p = video.play();
+          if (p && typeof p.catch === 'function') await p.catch(() => {});
+        } catch {}
+        if (video.paused) {
+          video.muted = true;
+          try {
+            const p = video.play();
+            if (p && typeof p.catch === 'function') await p.catch(() => {});
+          } catch {}
+        }
+      }
+      if (video && !video.paused) vpHidePlayGate();
+      else vpShowPlayGate(vod, 'Tap to play');
+    } catch {
+      vp.playbackStarted = false;
+      vpShowPlayGate(vod, 'Tap to retry');
+      vpShowError('Tap play to retry');
+    }
   }
 
   async function setModalVideoSource(video, v) {
@@ -7041,13 +8977,13 @@ html:not(.age-verified) body {
         b.classList.toggle('on', String(b.textContent || '').trim().toUpperCase() === 'ALL');
       });
     }
-    visibleCount = PAGE_SIZE;
     if (pushHash) {
       const hash = `#${id}`;
       if (location.hash !== hash) history.pushState(null, '', hash);
     }
     applySectionUi();
     renderAll();
+    pmSeoApplySection(id);
     if (scroll) {
       const scrollIds = {
         home: 'home',
@@ -7072,7 +9008,6 @@ html:not(.age-verified) body {
     document.querySelectorAll('.fbtn').forEach(b => {
       b.classList.toggle('on', String(b.textContent || '').trim().toUpperCase() === activeFilter.toUpperCase());
     });
-    visibleCount = PAGE_SIZE;
     renderAll();
   }
 
@@ -7198,12 +9133,23 @@ html:not(.age-verified) body {
     const streamsEl = document.getElementById('heroStreamsNum');
     const runtimeEl = document.getElementById('heroRuntimeNum');
     const sinceEl = document.getElementById('heroSinceNum');
-    const vodEl = document.getElementById('heroVodNum');
+    const visitorsEl = document.getElementById('heroVisitorsTodayNum');
+    const totalViewsEl = document.getElementById('heroTotalViewsNum');
 
     if (streamsEl) streamsEl.textContent = m.total ? fmtViews(m.total) : '—';
     if (runtimeEl) runtimeEl.textContent = m.total ? `${fmtViews(m.hours)}h` : '—';
     if (sinceEl) sinceEl.textContent = m.minYear != null ? String(m.minYear) : '—';
-    if (vodEl) vodEl.textContent = fmtViews(Number(pmStats.totals?.totalViews) || 0);
+    if (visitorsEl) {
+      visitorsEl.textContent =
+        pmPresence.active && typeof pmPresence.visitorsToday === 'number'
+          ? fmtViews(pmPresence.visitorsToday)
+          : '—';
+    }
+    if (totalViewsEl) {
+      totalViewsEl.textContent = pmStats.live
+        ? fmtViews(Number(pmStats.totals?.totalViews) || 0)
+        : '—';
+    }
 
     updateAboutSection(m);
   }
@@ -7490,10 +9436,9 @@ html:not(.age-verified) body {
     });
   }
 
-  async function pmGenThumbFromHls(v) {
-    const id = String(v?.id || '');
+  async function pmHlsPrepareMidSegmentLoad(v) {
     const src = String(getPrimarySrc(v) || '');
-    if (!id || !src || !isHlsSrc(src)) return null;
+    if (!src || !isHlsSrc(src)) return null;
 
     const masterUrl = new URL(src, window.location.href).toString();
     const masterRes = await fetch(masterUrl, { cache: 'no-store' });
@@ -7512,6 +9457,28 @@ html:not(.age-verified) body {
     const segs = pmParseM3u8Segments(varText, variantUrl);
     const seg = pmFindSegmentForTime(segs, targetSec);
 
+    let playlistBlobUrl = null;
+    let loadUrl = variantUrl;
+    let seekTo = Math.min(Math.max(1, targetSec), Math.max(1, parsedDur - 0.5));
+    if (seg) {
+      playlistBlobUrl = URL.createObjectURL(
+        new Blob([pmBuildSegmentPlaylist(seg)], { type: 'application/vnd.apple.mpegurl' })
+      );
+      loadUrl = playlistBlobUrl;
+      seekTo = Math.max(0, Math.min(Math.max(0, seg.dur - 0.08), seg.offset || 0));
+    }
+
+    return { loadUrl, seekTo, playlistBlobUrl };
+  }
+
+  async function pmGenThumbFromHls(v) {
+    if (state.modalOpen) return null;
+    const id = String(v?.id || '');
+    if (!id) return null;
+
+    const prep = await pmHlsPrepareMidSegmentLoad(v);
+    if (!prep) return null;
+
     const video = document.createElement('video');
     video.muted = true;
     video.playsInline = true;
@@ -7525,30 +9492,21 @@ html:not(.age-verified) body {
     document.body.appendChild(video);
 
     let hls = null;
-    let playlistUrl = null;
     try {
-      if (seg) {
-        playlistUrl = URL.createObjectURL(new Blob([pmBuildSegmentPlaylist(seg)], { type: 'application/vnd.apple.mpegurl' }));
-      }
-
-      const loadUrl = playlistUrl || variantUrl;
       if (shouldUseNativeHls(video)) {
-        video.src = loadUrl;
+        video.src = prep.loadUrl;
         video.load();
       } else {
         const Hls = await loadHlsJs();
         if (!Hls || !Hls.isSupported()) return null;
         hls = createHlsInstance(Hls);
-        hls.loadSource(loadUrl);
+        hls.loadSource(prep.loadUrl);
         hls.attachMedia(video);
       }
 
       await waitEvent(video, 'loadedmetadata', 15000);
-      const seekTo = seg
-        ? Math.max(0, Math.min(Math.max(0, seg.dur - 0.08), seg.offset || 0))
-        : Math.min(Math.max(1, targetSec), Math.max(1, (video.duration || targetSec) - 0.5));
       try {
-        video.currentTime = seekTo;
+        video.currentTime = prep.seekTo;
       } catch {}
       try {
         await waitEvent(video, 'seeked', 15000);
@@ -7584,13 +9542,190 @@ html:not(.age-verified) body {
         video.removeAttribute('src');
         video.load();
       } catch {}
-      if (playlistUrl) URL.revokeObjectURL(playlistUrl);
+      if (prep.playlistBlobUrl) URL.revokeObjectURL(prep.playlistBlobUrl);
       video.remove();
     }
   }
 
+  const pmHoverPrev = {
+    token: 0,
+    hls: null,
+    blobUrl: null,
+    video: null,
+    thumb: null,
+    debounce: null
+  };
+
+  const PM_HOVER_PREVIEW_RATE = 3;
+  const PM_HOVER_PREVIEW_DEBOUNCE_MS = 180;
+
+  function pmHoverPreviewSupported() {
+    if (isMobile()) return false;
+    try {
+      return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    } catch {
+      return !isMobile();
+    }
+  }
+
+  function pmHoverPreviewRate() {
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 1.5;
+    } catch {}
+    return PM_HOVER_PREVIEW_RATE;
+  }
+
+  function pmHoverPreviewClearLoading(thumb) {
+    if (thumb) thumb.classList.remove('preview-loading', 'previewing');
+  }
+
+  function pmHoverPreviewStop() {
+    if (pmHoverPrev.debounce) {
+      window.clearTimeout(pmHoverPrev.debounce);
+      pmHoverPrev.debounce = null;
+    }
+    pmHoverPrev.token += 1;
+    if (pmHoverPrev.hls) {
+      try {
+        pmHoverPrev.hls.destroy();
+      } catch {}
+      pmHoverPrev.hls = null;
+    }
+    if (pmHoverPrev.blobUrl) {
+      URL.revokeObjectURL(pmHoverPrev.blobUrl);
+      pmHoverPrev.blobUrl = null;
+    }
+    if (pmHoverPrev.video) {
+      try {
+        pmHoverPrev.video.pause();
+        pmHoverPrev.video.playbackRate = 1;
+        pmHoverPrev.video.removeAttribute('src');
+        pmHoverPrev.video.load();
+      } catch {}
+    }
+    if (pmHoverPrev.thumb) {
+      pmHoverPrev.thumb.classList.remove('previewing', 'preview-loading');
+    }
+    pmHoverPrev.video = null;
+    pmHoverPrev.thumb = null;
+  }
+
+  function pmHoverPreviewTargets(card) {
+    if (!card) return { thumb: null, video: null };
+    if (card.classList.contains('featured-video')) {
+      return { thumb: card, video: card.querySelector('.vc-preview') };
+    }
+    const thumb = card.querySelector('.vc-thumb') || card.querySelector('.si-thumb');
+    return { thumb, video: thumb?.querySelector('.vc-preview') || card.querySelector('.vc-preview') };
+  }
+
+  async function pmHoverPreviewStart(card, v) {
+    const { thumb, video } = pmHoverPreviewTargets(card);
+    if (!thumb || !video || !v || v.ready === false) return;
+
+    pmHoverPreviewStop();
+    pmHoverPrev.thumb = thumb;
+    pmHoverPrev.video = video;
+    const token = pmHoverPrev.token;
+    thumb.classList.add('preview-loading');
+
+    try {
+      const src = String(getPrimarySrc(v) || '');
+      if (!src) return;
+
+      let seekTo = pmThumbPickSeekSec(v, Number(v.duration) || 0);
+
+      if (isHlsSrc(src)) {
+        const prep = await pmHlsPrepareMidSegmentLoad(v);
+        if (token !== pmHoverPrev.token) return;
+        if (!prep) return;
+
+        pmHoverPrev.blobUrl = prep.playlistBlobUrl || null;
+        seekTo = prep.seekTo;
+
+        try {
+          video.crossOrigin = 'anonymous';
+        } catch {}
+
+        if (shouldUseNativeHls(video)) {
+          video.src = prep.loadUrl;
+          video.load();
+        } else {
+          const Hls = await loadHlsJs();
+          if (token !== pmHoverPrev.token) return;
+          if (!Hls?.isSupported()) return;
+          const hls = createHlsInstance(Hls);
+          pmHoverPrev.hls = hls;
+          hls.loadSource(prep.loadUrl);
+          hls.attachMedia(video);
+        }
+      } else {
+        video.src = new URL(src, window.location.href).toString();
+        video.load();
+      }
+
+      await waitEvent(video, 'loadedmetadata', 12000);
+      if (token !== pmHoverPrev.token) return;
+
+      if (!isHlsSrc(src)) {
+        seekTo = pmThumbPickSeekSec(v, video.duration);
+      }
+
+      try {
+        video.currentTime = seekTo;
+      } catch {}
+      try {
+        await waitEvent(video, 'seeked', 8000);
+      } catch {}
+
+      video.muted = true;
+      video.playsInline = true;
+      video.loop = true;
+      video.playbackRate = pmHoverPreviewRate();
+
+      if (token !== pmHoverPrev.token) return;
+
+      thumb.classList.remove('preview-loading');
+      thumb.classList.add('previewing');
+
+      const p = video.play();
+      if (p && typeof p.catch === 'function') await p.catch(() => {});
+    } catch {
+      if (token === pmHoverPrev.token) pmHoverPreviewClearLoading(thumb);
+    } finally {
+      if (token === pmHoverPrev.token && !thumb.classList.contains('previewing')) {
+        thumb.classList.remove('preview-loading');
+      }
+    }
+  }
+
+  function pmHoverPreviewEnter(card, v) {
+    if (!pmHoverPreviewSupported() || state.modalOpen) return;
+    if (pmHoverPrev.debounce) window.clearTimeout(pmHoverPrev.debounce);
+    pmHoverPrev.debounce = window.setTimeout(() => {
+      pmHoverPrev.debounce = null;
+      void pmHoverPreviewStart(card, v);
+    }, PM_HOVER_PREVIEW_DEBOUNCE_MS);
+  }
+
+  function pmHoverPreviewLeave(card) {
+    if (pmHoverPrev.debounce) {
+      window.clearTimeout(pmHoverPrev.debounce);
+      pmHoverPrev.debounce = null;
+    }
+    const { thumb } = pmHoverPreviewTargets(card);
+    if (thumb && thumb === pmHoverPrev.thumb) pmHoverPreviewStop();
+  }
+
+  function pmBindHoverPreview(card, v) {
+    if (!card || !v) return;
+    card.addEventListener('mouseenter', () => pmHoverPreviewEnter(card, v));
+    card.addEventListener('mouseleave', () => pmHoverPreviewLeave(card));
+  }
+
   async function pmEnsureThumbForId(id) {
     if (!id || pmThumbs.inFlight.has(id)) return;
+    if (state.modalOpen) return;
     pmThumbs.inFlight.add(id);
     try {
       const v = getVideoById(id);
@@ -7690,6 +9825,7 @@ html:not(.age-verified) body {
 
     root.innerHTML = `
       <div class="fv-bg" ${pmThumbBgStyle(top, 0.55)}></div>
+      <video class="vc-preview" muted playsinline loop preload="none" aria-hidden="true"></video>
       <div class="fv-grid"></div>
       <div class="fv-glow1"></div>
       <div class="fv-glow2"></div>
@@ -7711,6 +9847,7 @@ html:not(.age-verified) body {
     `;
     root.dataset.videoId = top.id;
     pmThumbObserve(root.querySelector('.fv-bg'), top, 0.55);
+    pmBindHoverPreview(root, top);
 
     const rest = list.slice(1, 6);
     upNext.innerHTML = rest
@@ -7722,6 +9859,7 @@ html:not(.age-verified) body {
               <div class="si-bg ${safeText(v.thumbClass)}" ${pmThumbBgStyle(v, 0.25)}>
                 ${pmHasUsableThumb(v) ? '' : `<div class="thumb-gfx">${safeText(v.monogram)}</div>`}
               </div>
+              <video class="vc-preview" muted playsinline loop preload="none" aria-hidden="true"></video>
             </div>
             <div class="si-info">
               <div class="si-title">${safeText(v.title)}</div>
@@ -7738,6 +9876,7 @@ html:not(.age-verified) body {
       const v = getVideoById(id);
       const bg = row.querySelector('.si-bg');
       pmThumbObserve(bg, v, 0.25);
+      pmBindHoverPreview(row, v);
     });
   }
 
@@ -7787,6 +9926,7 @@ html:not(.age-verified) body {
               <div class="vc-bg ${safeText(v.thumbClass)}" ${pmThumbBgStyle(v, 0.25)}>
                 ${pmHasUsableThumb(v) ? '' : `<div class="thumb-gfx">${safeText(v.monogram)}</div>`}
               </div>
+              <video class="vc-preview" muted playsinline loop preload="none" aria-hidden="true"></video>
               <div class="vc-overlay"><div class="vc-play"><div class="vc-play-tri"></div></div></div>
               <div class="vc-dur">${safeText(fmtHms(v.duration))}</div>
               <div class="vc-rank">${String(idx + 1).padStart(2, '0')}</div>
@@ -7806,12 +9946,11 @@ html:not(.age-verified) body {
       const v = getVideoById(id);
       const bg = card.querySelector('.vc-bg');
       pmThumbObserve(bg, v, 0.25);
+      pmBindHoverPreview(card, v);
     });
 
     const loadBtn = document.getElementById('loadMoreBtn');
-    if (loadBtn) {
-      loadBtn.style.display = list.length > visibleCount ? '' : 'none';
-    }
+    if (loadBtn) loadBtn.hidden = true;
   }
 
   function renderCounts(list) {
@@ -7823,9 +9962,7 @@ html:not(.age-verified) body {
   function renderAll() {
     applySectionUi();
     const list = filteredVideos();
-    if (list.length > visibleCount && list.length <= GRID_SHOW_ALL_MAX) {
-      syncGridVisibleCount(list);
-    }
+    syncGridVisibleCount(list);
     renderCounts(list);
     renderCategoryBrowser();
     if (activeSection === 'home' || activeSection === 'recent') renderFeatured(list);
@@ -7843,7 +9980,6 @@ html:not(.age-verified) body {
     document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
     btn.classList.add('on');
     activeFilter = String(btn.textContent || '').trim().toUpperCase();
-    visibleCount = PAGE_SIZE;
     renderAll();
   }
 
@@ -7853,17 +9989,8 @@ html:not(.age-verified) body {
     if (search) {
       search.addEventListener('input', e => {
         query = String(e.target.value || '');
-        visibleCount = PAGE_SIZE;
         clearTimeout(searchDebounceTimer);
         searchDebounceTimer = window.setTimeout(() => renderAll(), 200);
-      });
-    }
-
-    const loadBtn = document.getElementById('loadMoreBtn');
-    if (loadBtn) {
-      loadBtn.addEventListener('click', () => {
-        visibleCount += PAGE_SIZE;
-        renderAll();
       });
     }
 
@@ -7907,7 +10034,11 @@ html:not(.age-verified) body {
     isDragging: false,
     volOpen: false,
     isLive: false,
-    inlineAttrs: null
+    inlineAttrs: null,
+    loadToken: 0,
+    pendingLoad: null,
+    playbackStarted: false,
+    loadTimer: null
   };
 
   const vpSeekPreview = {
@@ -8751,6 +10882,10 @@ html:not(.age-verified) body {
   function vpTogglePlay() {
     const { video, controls } = vpEls();
     if (!video) return;
+    if (vpNeedsTapToStart() && vp.pendingLoad && !vp.playbackStarted) {
+      void vpStartPlayback();
+      return;
+    }
     if (vpIsFs() && controls?.classList.contains('hidden')) {
       vpForceControlsVisible();
       return;
@@ -9198,6 +11333,7 @@ html:not(.age-verified) body {
         maybeSaveResume(video);
         vpTsHighlightActive(cur);
         vpCcUpdate(cur);
+        vpUpNextMaybeShow(video);
       }
     });
   }
@@ -9225,11 +11361,40 @@ html:not(.age-verified) body {
     iconMute.style.display = muted ? '' : 'none';
   }
 
+  function vpClearLoadTimer() {
+    if (vp.loadTimer) {
+      window.clearTimeout(vp.loadTimer);
+      vp.loadTimer = null;
+    }
+  }
+
+  function vpArmLoadTimer(loadToken) {
+    vpClearLoadTimer();
+    const timeoutMs = vpIsTouchUi() ? 45000 : 90000;
+    vp.loadTimer = window.setTimeout(() => {
+      if (loadToken !== vp.loadToken) return;
+      const { video, spinner } = vpEls();
+      const hasProgress =
+        !!(video && (video.readyState >= 2 || video.buffered?.length > 0 || !video.paused));
+      if (hasProgress) {
+        if (spinner?.classList.contains('active')) spinner.classList.remove('active');
+        return;
+      }
+      if (spinner?.classList.contains('active')) {
+        spinner.classList.remove('active');
+        vpShowError(vpIsTouchUi() ? 'Tap play to retry' : 'Stream is taking too long — click play or try again.');
+      }
+    }, timeoutMs);
+  }
+
   function vpShowError(msg) {
     const { errorToast, errorMsg, spinner } = vpEls();
     if (errorMsg) errorMsg.textContent = msg;
     if (errorToast) errorToast.classList.add('show');
     if (spinner) spinner.classList.remove('active');
+    if (vpIsTouchUi() && vp.pendingLoad?.vod) {
+      vpShowPlayGate(vp.pendingLoad.vod, 'Tap to retry');
+    }
   }
 
   function vpClearError() {
@@ -9301,7 +11466,7 @@ html:not(.age-verified) body {
     return -1;
   }
 
-  async function loadStream(url, name) {
+  async function loadStream(url, name, opts = {}) {
     const {
       video,
       spinner,
@@ -9317,6 +11482,9 @@ html:not(.age-verified) body {
     } = vpEls();
 
     if (!video) return;
+
+    let playUrl = String(url || '');
+    const fromTap = !!opts?.fromTap;
 
     vpPrepareVideoForPlayback(video);
     vpClearError();
@@ -9335,27 +11503,49 @@ html:not(.age-verified) body {
     video.pause();
     video.removeAttribute('src');
     video.load();
+
+    vp.loadToken += 1;
+    const loadToken = vp.loadToken;
     if (spinner) spinner.classList.add('active');
+    vpArmLoadTimer(loadToken);
     vpSeekPreviewTeardown();
 
     const curVod = getVideoById(state.selectedVideoId);
-    const isHLS = String(url || '').includes('.m3u8') || String(url || '').includes('hls');
+    const isHLS = playUrl.includes('.m3u8') || playUrl.includes('hls');
+    const finishManifest = () => {
+      if (loadToken !== vp.loadToken) return;
+      if (spinner) spinner.classList.remove('active');
+    };
     if (isHLS) {
+      playUrl = await vpResolvePlaybackUrl(playUrl);
+      if (loadToken !== vp.loadToken) return;
+
       if (shouldUseNativeHls(video)) {
-        video.src = url;
-        vpSeekPreviewConfigure(url, curVod?.thumbSrc || '');
+        video.src = playUrl;
         void vpPlayWhenReady(video);
-        if (spinner) spinner.classList.remove('active');
+        finishManifest();
+        void vpSeekPreviewConfigure(playUrl, curVod?.thumbSrc || '');
         return;
       }
 
-      const Hls = await loadHlsJs();
+      let Hls;
+      try {
+        Hls = await loadHlsJs();
+      } catch {
+        if (loadToken !== vp.loadToken) return;
+        vpClearLoadTimer();
+        if (spinner) spinner.classList.remove('active');
+        vpShowError('Player failed to load. Refresh and try again.');
+        return;
+      }
+      if (loadToken !== vp.loadToken) return;
       if (Hls && Hls.isSupported()) {
         vp.hls = createHlsInstance(Hls);
         vp.hls.attachMedia(video);
-        vp.hls.loadSource(url);
+        vp.hls.loadSource(playUrl);
 
         vp.hls.on(Hls.Events.MANIFEST_PARSED, (e, data) => {
+          if (loadToken !== vp.loadToken) return;
           const levels = Array.isArray(data?.levels) ? data.levels : [];
           const savedIdx = vpApplySavedQuality(levels);
           vpBuildQualityPanel(levels, savedIdx);
@@ -9367,7 +11557,9 @@ html:not(.age-verified) body {
             vp.hls.currentLevel = savedIdx;
             vp.hls.loadLevel = savedIdx;
           }
-          if (spinner) spinner.classList.remove('active');
+          finishManifest();
+          void vpSeekPreviewConfigure(playUrl, curVod?.thumbSrc || '');
+          if (fromTap) return;
           void vpPlayWhenReady(video);
         });
 
@@ -9381,6 +11573,9 @@ html:not(.age-verified) body {
         vp.hls.on(Hls.Events.FRAG_BUFFERED, () => vpUpdateBuffered());
 
         bindHlsFatalRecovery(vp.hls, data => {
+          if (loadToken !== vp.loadToken) return;
+          vpClearLoadTimer();
+          finishManifest();
           vpShowError('Fatal error: ' + String(data?.details || 'unknown'));
         });
 
@@ -9390,27 +11585,27 @@ html:not(.age-verified) body {
           if (vp.isLive && timeDuration) timeDuration.textContent = 'LIVE';
         });
 
-        void vpSeekPreviewConfigure(url, curVod?.thumbSrc || '');
         return;
       }
 
       if (curVod?.mp4Src) {
         video.src = curVod.mp4Src;
-        vpSeekPreviewConfigure(curVod.mp4Src, curVod?.thumbSrc || '');
         void vpPlayWhenReady(video);
-        if (spinner) spinner.classList.remove('active');
+        finishManifest();
+        void vpSeekPreviewConfigure(curVod.mp4Src, curVod?.thumbSrc || '');
         return;
       }
 
+      vpClearLoadTimer();
+      finishManifest();
       vpShowError('HLS playback is not supported in this browser.');
-      if (spinner) spinner.classList.remove('active');
       return;
     }
 
-    video.src = url;
-    vpSeekPreviewConfigure(url, curVod?.thumbSrc || '');
+    video.src = playUrl;
     void vpPlayWhenReady(video);
-    if (spinner) spinner.classList.remove('active');
+    finishManifest();
+    void vpSeekPreviewConfigure(playUrl, curVod?.thumbSrc || '');
   }
 
   function vpTeardown() {
@@ -9435,6 +11630,12 @@ html:not(.age-verified) body {
     if (controls) controls.classList.remove('hidden');
     if (errorToast) errorToast.classList.remove('show');
     if (spinner) spinner.classList.remove('active');
+    vpClearLoadTimer();
+    vpHidePlayGate();
+    vpHideResumePrompt();
+    vpHideUpNext();
+    vp.pendingLoad = null;
+    vp.playbackStarted = false;
 
     if (video) {
       try { video.pause(); } catch {}
@@ -9463,12 +11664,44 @@ html:not(.age-verified) body {
     if (video) video.addEventListener('click', () => vpTogglePlay());
     if (playBtn) playBtn.addEventListener('click', e => { e.stopPropagation(); vpTogglePlay(); });
 
+    const playGate = document.getElementById('vpPlayGate');
+    if (playGate) {
+      playGate.addEventListener('click', e => {
+        e.stopPropagation();
+        const resumeEl = document.getElementById('vpResumePrompt');
+        if (resumeEl && resumeEl.classList.contains('show')) return;
+        void vpStartPlayback();
+      });
+    }
+
+    document.getElementById('vpResumeContinue')?.addEventListener('click', e => {
+      e.stopPropagation();
+      vpOnResumeContinue();
+    });
+    document.getElementById('vpResumeStart')?.addEventListener('click', e => {
+      e.stopPropagation();
+      vpOnResumeStartOver();
+    });
+    document.getElementById('vpUpNextCancel')?.addEventListener('click', e => {
+      e.stopPropagation();
+      state.upNextCancelled = true;
+      vpHideUpNext();
+    });
+    document.getElementById('vpUpNextNow')?.addEventListener('click', e => {
+      e.stopPropagation();
+      void vpPlayNextVideo();
+    });
+    vpInitAutoplayNextSetting();
+
     if (video) {
       video.addEventListener('play', () => {
         const { iconPlay, iconPause, spinner } = vpEls();
         if (iconPlay) iconPlay.style.display = 'none';
         if (iconPause) iconPause.style.display = '';
         if (spinner) spinner.classList.remove('active');
+        vpClearLoadTimer();
+        vpHidePlayGate();
+        vpHideResumePrompt();
         vpClearError();
       });
       video.addEventListener('pause', () => {
@@ -9482,9 +11715,28 @@ html:not(.age-verified) body {
         if (iconPlay) iconPlay.style.display = '';
         if (iconPause) iconPause.style.display = 'none';
         if (controls) controls.classList.remove('hidden');
+        vpHideUpNext();
+        if (vpAutoplayNextEnabled() && !state.upNextCancelled) {
+          const nextId = vpGetNextVideoId(state.selectedVideoId);
+          if (nextId) {
+            if (state.upNextPlayTimer) window.clearTimeout(state.upNextPlayTimer);
+            state.upNextPlayTimer = window.setTimeout(() => {
+              state.upNextPlayTimer = null;
+              void vpPlayNextVideo();
+            }, 2000);
+          }
+        }
       });
       video.addEventListener('waiting', () => vpEls().spinner?.classList.add('active'));
-      video.addEventListener('canplay', () => vpEls().spinner?.classList.remove('active'));
+      video.addEventListener('canplay', () => {
+        vpEls().spinner?.classList.remove('active');
+        vpClearLoadTimer();
+      });
+      video.addEventListener('playing', () => {
+        vpEls().spinner?.classList.remove('active');
+        vpClearLoadTimer();
+        vpClearError();
+      });
       video.addEventListener('timeupdate', () => vpUpdateProgress());
       video.addEventListener('progress', () => vpUpdateBuffered());
       video.addEventListener('loadedmetadata', () => {
@@ -9860,10 +12112,8 @@ html:not(.age-verified) body {
   }
 
   function vpTsShareUrl(id, sec) {
-    const u = new URL(window.location.href);
-    u.searchParams.set('v', String(id || ''));
+    const u = new URL(`${PM_SEO_ORIGIN}${pmSeoVideoPath(id)}`);
     if (Number.isFinite(sec) && sec > 0) u.searchParams.set('t', String(Math.floor(sec)));
-    else u.searchParams.delete('t');
     return u.toString();
   }
 
@@ -10275,6 +12525,7 @@ html:not(.age-verified) body {
       const card = document.createElement('button');
       card.type = 'button';
       card.className = 'vpd-rec-card';
+      card.dataset.videoId = String(v.id || '');
 
       const thumb = document.createElement('div');
       thumb.className = 'vpd-rec-thumb';
@@ -10379,19 +12630,21 @@ html:not(.age-verified) body {
   }
 
   function vpDetailShareUrl(id, sec) {
-    if (Number.isFinite(sec) && sec > 0) return vpTsShareUrl(id, sec);
-    const u = new URL(window.location.href);
-    u.searchParams.set('v', id);
-    u.searchParams.delete('t');
-    return u.toString();
+    return vpTsShareUrl(id, sec);
   }
 
   function vpDetailSetUrl(id, sec) {
     const u = new URL(window.location.href);
-    if (id) u.searchParams.set('v', id);
-    else u.searchParams.delete('v');
-    if (id && Number.isFinite(sec) && sec > 0) u.searchParams.set('t', String(Math.floor(sec)));
-    else u.searchParams.delete('t');
+    if (id) {
+      u.pathname = pmSeoVideoPath(id);
+      u.searchParams.delete('v');
+      if (Number.isFinite(sec) && sec > 0) u.searchParams.set('t', String(Math.floor(sec)));
+      else u.searchParams.delete('t');
+    } else {
+      u.pathname = '/';
+      u.searchParams.delete('v');
+      u.searchParams.delete('t');
+    }
     history.replaceState({}, '', u.pathname + u.search + u.hash);
   }
 
@@ -10701,14 +12954,41 @@ html:not(.age-verified) body {
   async function openModalById(id) {
     const v = getVideoById(id);
     if (!v) return;
-    state.selectedVideoId = id;
-    const deepSec = vpTsParseDeepSec();
-    state.resumePendingSec = deepSec != null ? deepSec : readResumeSec(id);
-    state.resumeSavedAt = 0;
 
-    document.getElementById('modalBg').classList.add('open');
-    lockBodyScroll();
-    state.modalOpen = true;
+    state.browseListIds = filteredVideos().map(x => String(x.id));
+    state.upNextCancelled = false;
+    vpHideUpNext();
+    vpHideResumePrompt();
+
+    if (!state.modalOpen) {
+      document.getElementById('modalBg').classList.add('open');
+      lockBodyScroll();
+      state.modalOpen = true;
+      vpInit();
+    }
+
+    await vpLoadVideoInModal(id, { chain: false });
+  }
+
+  async function vpLoadVideoInModal(id, opts = {}) {
+    const v = getVideoById(id);
+    if (!v) return;
+
+    const video = document.getElementById('video');
+    if (video && state.selectedVideoId) maybeSaveResume(video);
+
+    vpHideUpNext();
+    vpHideResumePrompt();
+    pmTsClearPreroll();
+    vp.playbackStarted = false;
+    vp.pendingLoad = null;
+
+    state.selectedVideoId = id;
+    const deepSec = opts.chain ? null : vpTsParseDeepSec();
+    const savedSec = deepSec != null ? deepSec : readResumeSec(id);
+    state.resumeSavedAt = 0;
+    state.resumePendingSec = null;
+
     vpDetailInit();
     vpTsPanelShow(true);
     vpTsSetCollapsed(false);
@@ -10716,10 +12996,11 @@ html:not(.age-verified) body {
     vpCsSetCollapsed(isMobile());
     vpDetailRender(v);
     vpDetailSetUrl(id, deepSec != null ? deepSec : null);
+    pmSeoApplyVideo(v);
     refreshModalCommunity(id);
     recordVideoView(id);
-    vpInit();
     vpShowControls();
+    pmTsShowModalBanner();
 
     if (v.ready === false) {
       vpShowError('Upload still running. Try again later.');
@@ -10727,17 +13008,25 @@ html:not(.age-verified) body {
     }
 
     const src = getPrimarySrc(v);
-    if (src && isHlsSrc(src) && !(await probeStreamReady(src))) {
-      vpShowError('Video files not on server yet. Finish the R2 upload from RunPod, then try again.');
+    vp.pendingLoad = { src, title: v.title, vod: v };
+
+    if (vpShouldOfferResume(v, savedSec, deepSec != null)) {
+      vpShowResumePrompt(v, savedSec);
+      pmSheetSetState({});
       return;
     }
 
-    try {
-      await loadStream(src, v.title);
-      void vpCcLoadForVideo(v);
-    } catch {
-      vpShowError('Stream error');
+    if (Number.isFinite(savedSec) && savedSec > 0.5) {
+      state.resumePendingSec = savedSec;
     }
+
+    if (vpNeedsTapToStart()) {
+      vpShowPlayGate(v, 'Tap to play');
+      pmSheetSetState({});
+      return;
+    }
+
+    await vpBeginPlaybackAfterPrompt();
     pmSheetSetState({});
   }
 
@@ -10745,10 +13034,16 @@ html:not(.age-verified) body {
     document.getElementById('modalBg').classList.remove('open');
     unlockBodyScroll();
     state.modalOpen = false;
+    pmHoverPreviewStop();
+    pmTsClearPreroll();
+    pmTsHideModalBanner();
+    vpHideUpNext();
+    vpHideResumePrompt();
     const video = document.getElementById('video');
     if (video) maybeSaveResume(video);
     vpDetailClear();
     vpDetailSetUrl(null);
+    pmSeoApplySection(activeSection);
     vpTeardown();
     if (state.gridTagsDirty) {
       state.gridTagsDirty = false;
@@ -11142,14 +13437,17 @@ html:not(.age-verified) body {
     pmSheetInit();
     vpDetailInit();
     startPmStatsPolling();
+    startPmPresence();
     await loadTagVocabulary();
     try {
       await loadVideos();
+      pmSeoRenderCatalogLinks();
     } catch {
       videos = [];
       buildVodIndex();
       updateHeroStats();
     }
+    pmSeoReadQuery();
     const hashSection = (() => {
       const h = location.hash.slice(1);
       if (h === 'latest') return 'recent';
@@ -11158,7 +13456,9 @@ html:not(.age-verified) body {
     if (NAV_SECTIONS.includes(hashSection)) activeSection = hashSection;
     applySectionUi();
     renderAll();
-    const deepId = new URLSearchParams(window.location.search).get('v');
+    pmSeoApplySection(activeSection);
+    pmTsInitStatic();
+    const deepId = pmSeoDeepVideoId();
     if (deepId && getVideoById(deepId)) openModalById(deepId);
   }
 

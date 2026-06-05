@@ -78,11 +78,12 @@ def main() -> None:
   ap.add_argument("--date", required=True)
   ap.add_argument("--duration", required=True)
   ap.add_argument("--hls-src", required=True)
-  ap.add_argument("--thumb-src", required=True)
+  ap.add_argument("--thumb-src", default="", help="Optional static thumb; site auto-generates from middle HLS segment when omitted")
   ap.add_argument("--pinned", required=True)
   ap.add_argument("--tags", required=True)
   ap.add_argument("--thumb-class", required=True)
   ap.add_argument("--monogram", required=True)
+  ap.add_argument("--cc-src", default="", help="Optional WebVTT path, e.g. /videos/streams/.../nsfw.vtt")
   args = ap.parse_args()
 
   owner, name = parse_repo(args.repo)
@@ -128,13 +129,17 @@ def main() -> None:
     "tags": tags,
     "pinned": pinned,
     "ready": True,
-    "thumbSrc": args.thumb_src,
     "thumbClass": args.thumb_class,
     "monogram": args.monogram,
     "hlsSrc": args.hls_src
   }
-
-  paths = ["public/videos.json", "videos.json"]
+  thumb_src = str(args.thumb_src or "").strip()
+  if thumb_src:
+    entry["thumbSrc"] = thumb_src
+  cc_src = str(args.cc_src or "").strip()
+  if cc_src:
+    entry["ccSrc"] = cc_src
+  paths = ["public/catalog-source.json", "videos.json"]
   for p in paths:
     content_url = f"{repo_url}/contents/{p}"
     cur = get_json(session, f"{content_url}?ref={default_branch}")
@@ -165,7 +170,8 @@ def main() -> None:
         [
           f"stream-id: {args.stream_id}",
           f"hls: {args.hls_src}",
-          f"thumb: {args.thumb_src}",
+          f"thumb: {thumb_src or '(auto from middle HLS segment)'}",
+          f"cc: {cc_src or '(none)'}",
           "ladder: 1080p + 720p",
           "segments: 4s",
           "uploader: s5cmd (R2 S3)"
