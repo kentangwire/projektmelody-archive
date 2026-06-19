@@ -9,10 +9,10 @@ export function containsHtmlOrUrl(s) {
 }
 
 export function parseDisplayName(raw) {
-  if (raw == null || raw === '') return null;
+  if (raw == null || raw === '') throw validationError('displayName is required');
   if (typeof raw !== 'string') throw validationError('displayName must be a string');
   const trimmed = raw.trim();
-  if (!trimmed) return null;
+  if (!trimmed) throw validationError('displayName is required');
   if (trimmed.length > MAX_COMMENT_NAME) throw validationError('displayName too long');
   if (!/^[\w\s\-_.]{1,32}$/u.test(trimmed)) {
     throw validationError('displayName contains invalid characters');

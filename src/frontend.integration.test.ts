@@ -131,8 +131,15 @@ describe('frontend uses API', () => {
     expect(html).toContain('function vpPlayNextVideo');
     expect(html).toContain('xplayer-ads.js');
     expect(html).toContain("mode: 'vast'");
-    expect(html).not.toContain('PM_JUICYADS');
+    expect(html).toContain('const PM_JUICYADS');
+    expect(html).toContain('poweredby.jads.co/js/jads.js');
+    expect(html).toContain('1119238');
+    expect(html).toContain('name="admaven-placement" content="BqjY8qdw8"');
     expect(html).not.toContain('juicyads-site-verification');
+    expect(html).not.toContain('PM_EXOCLICK');
+    expect(html).not.toContain('a.magsrv.com/ad-provider.js');
+    expect(html).toContain('id="video"');
+    expect(html).not.toContain("getElementById('modalVideo')");
   });
 
   test('HLS uses native playback on iOS only and hls.js elsewhere', () => {
@@ -247,10 +254,13 @@ describe('frontend uses API', () => {
     expect(html).toContain('class="search-wrap header-search"');
     expect(html).toContain('class="btn-primary header-login"');
     expect(html).toContain('id="kofiHeader" class="header-kofi"');
-    expect(html).toContain('id="patreonHeader" class="header-patreon"');
+    expect(html).toContain('id="kofiFooter"');
+    expect(html).toContain('function renderKofi');
+    expect(html).toContain('ko-fi.com/widgets/widget_2.js');
+    expect(html).toContain('https://ko-fi.com/frds');
     expect(html).toContain('id="archiveSearchAnchor"');
     expect(html).toContain('function pmLayoutHeaderSearch');
-    expect(html).toContain('grid-template-columns: minmax(4.8rem, auto) minmax(0, 1fr) minmax(4.8rem, auto)');
+    expect(html).toContain('grid-template-columns: minmax(4.8rem, auto) minmax(4.8rem, auto)');
     expect(html).toContain("matchMedia('(max-width: 900px)')");
   });
 
@@ -264,10 +274,8 @@ describe('frontend uses API', () => {
     expect(html).toContain('function updateAboutSection');
     expect(html).toContain('function playLatestVod');
     expect(html).toContain('about-channel-grid');
-    expect(html).toContain('about-support-panel');
-    expect(html).toContain('Archive Supporter');
-    expect(html).toContain('$2 / mo');
-    expect(html).toContain('patreon.com/c/FRDS_Melody');
+    expect(html).toContain('id="aboutLegal"');
+    expect(html).toContain('not affiliated with, endorsed by');
     expect(html).toContain('Watch live on Twitch');
   });
 
@@ -275,28 +283,32 @@ describe('frontend uses API', () => {
     const html = read('public/index.html');
 
     expect(html).toContain('id="watcherComments"');
-    expect(html).toContain('class="wcs-panel"');
+    expect(html).toContain('id="commentsBtn"');
+    expect(html).toContain('id="wcsDrawer"');
+    expect(html).toContain('class="wcs-drawer"');
+    expect(html).toContain('id="wcsCommentInput"');
+    expect(html).toContain('class="wcs-row"');
+    expect(html).toContain('Your name (required)');
+    expect(html).toContain('function vpCsOpenDrawer');
     expect(html).toContain('function refreshComments');
     expect(html).toContain('function renderComments');
     expect(html).toContain('function vpCsStartReply');
     expect(html).toContain('/comments');
   });
 
-  test('player includes community timestamps UI', () => {
+  test('comments support clickable time marks in player', () => {
     const html = read('public/index.html');
 
-    expect(html).toContain('id="watcherTimestamps"');
-    expect(html).toContain('class="wts-panel"');
-    expect(html).toContain('Watcher timestamps');
-    expect(html).toContain('id="tsList"');
-    expect(html).toContain('id="tsForm"');
-    expect(html).toContain('id="tsNowBtn"');
+    expect(html).not.toContain('id="watcherTimestamps"');
+    expect(html).not.toContain('class="wts-panel"');
+    expect(html).toContain('id="wcsAtTimeBtn"');
+    expect(html).toContain('▶ Mark time');
+    expect(html).toContain('function vpCsOpenDrawer');
+    expect(html).toContain('function vpCsRenderProgressMarkers');
     expect(html).toContain('id="progressChapters"');
-    expect(html).toContain('function refreshTimestamps');
     expect(html).toContain('function vpTsSeek');
-    expect(html).toContain('function vpTsShareUrl');
-    expect(html).toContain('function vpTsPanelShow');
-    expect(html).toContain('function vpTsRenderMarkers');
+    expect(html).toContain('data-cs-time');
+    expect(html).toContain('timeInSec');
   });
 
   test('player includes seek bar hover preview', () => {
@@ -372,7 +384,10 @@ describe('frontend uses API', () => {
     const html = read('public/index.html');
 
     expect(html).toContain('id="modalSide"');
-    expect(html).toContain('class="modal-side"');
+    expect(html).toContain('class="modal-layout-a modal-side"');
+    expect(html).toContain('class="modal-col-main"');
+    expect(html).toContain('class="modal-col-side"');
+    expect(html).toContain('id="vpdSideRec"');
     expect(html).toContain('function isDesktop');
     expect(html).toContain('function refreshModalCommunity');
     expect(html).toContain('@media (min-width: 901px)');
@@ -415,5 +430,19 @@ describe('frontend uses API', () => {
     expect(html).toContain('href="/vods"');
     expect(html).toContain('Projekt Melody VOD Archive');
     expect(html).toContain('max-image-preview:large');
+  });
+
+  test('recent streams can optionally show Fansly link in video description', () => {
+    const html = read('index.html');
+
+    expect(html).toContain('FANSLY_DEFAULT_URL');
+    expect(html).toContain('https://fansly.com/projektmelody');
+    expect(html).toContain('function getFanslyUrl');
+    expect(html).toContain('function vpDetailRenderFansly');
+    expect(html).toContain('id="vpdFanslyLink"');
+    expect(html).toContain('/assets/fansly-icon.svg');
+    expect(html).toContain('fanslyUrl');
+    expect(html).toContain('fanslyRedirect');
+    expect(html).not.toContain('function openVideoEntry');
   });
 });

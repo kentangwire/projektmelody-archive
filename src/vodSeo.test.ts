@@ -4,6 +4,7 @@ import {
   buildVodsListPage,
   escHtml,
   findVideo,
+  isSeoBot,
   parseVideoId,
   videoDescription
 } from '../functions/vodSeoUtil.js';
@@ -52,5 +53,15 @@ describe('vodSeoUtil', () => {
     expect(videoDescription({ title: 'Test', date: '2026-01-01', duration: 90, tags: ['Gaming'] })).toContain(
       'Projekt Melody'
     );
+  });
+
+  test('isSeoBot detects crawlers but not normal browsers', () => {
+    expect(isSeoBot('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')).toBe(true);
+    expect(isSeoBot('facebookexternalhit/1.1')).toBe(true);
+    expect(
+      isSeoBot(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      )
+    ).toBe(false);
   });
 });

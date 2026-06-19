@@ -47,11 +47,11 @@ function getClientIp(ip: string | undefined | null): string {
   return v || '0.0.0.0';
 }
 
-function parseDisplayName(raw: unknown): string | null {
-  if (raw == null || raw === '') return null;
+function parseDisplayName(raw: unknown): string {
+  if (raw == null || raw === '') throw new ApiError(400, 'BAD_REQUEST', 'displayName is required');
   if (typeof raw !== 'string') throw new ApiError(400, 'BAD_REQUEST', 'displayName must be a string');
   const trimmed = raw.trim();
-  if (!trimmed) return null;
+  if (!trimmed) throw new ApiError(400, 'BAD_REQUEST', 'displayName is required');
   if (trimmed.length > MAX_NAME) throw new ApiError(400, 'BAD_REQUEST', 'displayName too long');
   if (!/^[\w\s\-_.]{1,32}$/u.test(trimmed)) {
     throw new ApiError(400, 'BAD_REQUEST', 'displayName contains invalid characters');

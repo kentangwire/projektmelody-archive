@@ -1,15 +1,21 @@
-const MY_PREFIX = 'my-videos/';
+const PREFIX_BINDINGS = [
+  { prefix: 'my-videos/', binding: 'R2_MY_VIDEOS' },
+  { prefix: 'recent-vods/', binding: 'R2_RECENT_VODS' },
+  { prefix: '20-vods/', binding: 'R2_20_VODS' },
+];
 
 export function r2LookupPlans(urlKey) {
   const plans = [];
-  const stripped = urlKey.startsWith(MY_PREFIX) ? urlKey.slice(MY_PREFIX.length) : null;
 
-  if (stripped) {
-    plans.push({ binding: 'R2_MY_VIDEOS', key: stripped });
-    plans.push({ binding: 'R2_MY_VIDEOS', key: urlKey });
+  for (const { prefix, binding } of PREFIX_BINDINGS) {
+    if (!urlKey.startsWith(prefix)) continue;
+    const stripped = urlKey.slice(prefix.length);
+    plans.push({ binding, key: stripped });
+    plans.push({ binding, key: urlKey });
+    plans.push({ binding: 'R2_VIDEOS', key: stripped });
   }
+
   plans.push({ binding: 'R2_VIDEOS', key: urlKey });
-  if (stripped) plans.push({ binding: 'R2_VIDEOS', key: stripped });
 
   const seen = new Set();
   return plans.filter((p) => {

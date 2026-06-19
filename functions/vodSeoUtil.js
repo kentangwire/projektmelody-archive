@@ -219,3 +219,17 @@ export const SEO_HTML_HEADERS = {
   'content-type': 'text/html; charset=utf-8',
   'cache-control': 'public, max-age=300, stale-while-revalidate=600'
 };
+
+export function isSeoBot(userAgent) {
+  return /bot|crawl|spider|slurp|mediapartners|googlebot|bingbot|duckduckbot|facebookexternalhit|twitterbot|linkedinbot|discordbot|telegrambot|whatsapp|applebot|pinterest|yandex|baiduspider|semrush|ahref/i.test(
+    String(userAgent || '')
+  );
+}
+
+export async function serveSpaIndex(request, env) {
+  const indexUrl = new URL('/index.html', request.url);
+  const res = await env.ASSETS.fetch(new Request(indexUrl.toString(), request));
+  const headers = new Headers(res.headers);
+  headers.set('cache-control', 'no-cache');
+  return new Response(res.body, { status: res.status, headers });
+}

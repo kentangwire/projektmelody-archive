@@ -10,6 +10,14 @@ bucket_name = "r2-videos"
 binding = "R2_MY_VIDEOS"
 bucket_name = "my-videos"
 
+[[r2_buckets]]
+binding = "R2_RECENT_VODS"
+bucket_name = "recent-vods"
+
+[[r2_buckets]]
+binding = "R2_20_VODS"
+bucket_name = "20-vods"
+
 [dev]
 port = 8788
 local_protocol = "http"

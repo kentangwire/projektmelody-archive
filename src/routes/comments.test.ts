@@ -55,7 +55,19 @@ describe('POST /api/videos/:id/comments', () => {
     expect(prisma.comment.create).not.toHaveBeenCalled();
   });
 
-  it('creates top-level comment with optional display name', async () => {
+  it('rejects comment without display name', async () => {
+    const prisma = {
+      comment: { findFirst: vi.fn(), findUnique: vi.fn(), create: vi.fn() }
+    };
+    const app = makeApp(prisma);
+
+    const res = await request(app).post('/api/videos/v1/comments').send({ body: 'hello' });
+
+    expect(res.status).toBe(400);
+    expect(prisma.comment.create).not.toHaveBeenCalled();
+  });
+
+  it('creates top-level comment with display name', async () => {
     const created = {
       id: 'c1',
       videoId: 'v1',
@@ -124,7 +136,7 @@ describe('POST /api/videos/:id/comments', () => {
     const res = await request(app)
       .post('/api/videos/v1/comments')
       .set('X-Forwarded-For', '1.2.3.4')
-      .send({ body: 'reply', parentId: 'p1' });
+      .send({ body: 'reply', displayName: 'Fan', parentId: 'p1' });
 
     expect(res.status).toBe(201);
     expect(res.body.parentId).toBe('p1');

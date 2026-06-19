@@ -2,10 +2,17 @@ import {
   SEO_HTML_HEADERS,
   buildVideoPage,
   findVideo,
-  loadCatalog
+  isSeoBot,
+  loadCatalog,
+  serveSpaIndex
 } from '../vodSeoUtil.js';
 
-export async function onRequestGet({ env, params }) {
+export async function onRequestGet({ env, params, request }) {
+  const ua = request.headers.get('User-Agent') || '';
+  if (!isSeoBot(ua)) {
+    return serveSpaIndex(request, env);
+  }
+
   const catalog = await loadCatalog(env);
   const v = findVideo(catalog, params?.id);
   if (!v) {
